@@ -6,107 +6,111 @@ reverse_dir(n, s).
 reverse_dir(s, n).
 reverse_dir(w, e).
 reverse_dir(e, w).
+reverse_dir(up, down).
+reverse_dir(down, up).
 
 /*First floor*/
-path_to(start, e, hall_1_1).
-path_to(hall_1_1, e, hall_1_2).
-path_to(hall_1_2, s, hall_1_3).
-path_to(hall_1_3, w, hall_1_4).
+path_to(start, e, hall1_1_b).
+path_to(hall1_1_b, e, hall1_1_c).
+path_to(hall1_1_c, s, hall1_2_c).
+path_to(hall1_2_c, w, hall1_2_b).
 
-path_to(start, s, hall_1_5).
-path_to(hall_1_5, s, hall_1_6).
-path_to(hall_1_6, e, hall_1_7).
-path_to(hall_1_7, s, hall_1_8).
+path_to(start, s, hall1_2_a).
+path_to(hall1_2_a, s, hall1_3_a).
+path_to(hall1_3_a, e, hall1_3_b).
+path_to(hall1_3_b, s, hall1_4_b).
 
-path_to(hall_1_8, e, hall_1_9).
-path_to(hall_1_9, n, hall_1_10).
-path_to(hall_1_10, e, hall_1_11).
+path_to(hall1_4_b, e, hall1_4_c).
+path_to(hall1_4_c, n, hall1_3_c).
+path_to(hall1_3_c, e, hall1_3_d).
 
-path_to(hall_1_8, w, hall_1_12).
-path_to(hall_1_13, s, hall_1_14).
-path_to(hall_1_14, e, hall_1_15).
-path_to(hall_1_15, e, hall_1_16).
-path_to(hall_1_16, e, hall_1_17).
-path_to(hall_1_17, n, hall_1_18).
-path_to(hall_1_18, e, hall_1_19).
+path_to(hall1_4_b, w, hall1_4_a).
+path_to(hall1_4_a, s, hall1_5_a).
+path_to(hall1_5_a, e, hall1_5_b).
+path_to(hall1_5_b, e, hall1_5_c).
+path_to(hall1_5_c, e, hall1_5_d).
+path_to(hall1_5_d, n, hall1_4_d).
+path_to(hall1_4_d, e, hall1_4_e).
 
-path_to(hall_1_19, s, hall_1_20).
-path_to(hall_1_20, e, hall_1_21).
+path_to(hall1_4_e, s, hall1_5_e).
+path_to(hall1_5_e, e, hall1_5_f).
 
-path_to(hall_1_19, n, hall_1_22).
+path_to(hall1_4_e, n, hall1_3_e).
 
-path_to(hall_1_22, e, hall_1_23).
-path_to(hall_1_23, s, hall_1_24).
-path_to(hall_1_24, e, staircase).
+path_to(hall1_3_e, e, hall1_3_f).
+path_to(hall1_3_f, s, hall1_4_f).
+path_to(hall1_4_f, e, staircase_1).
 
-path_to(hall_1_22, n, hall_1_25).
-path_to(hall_1_25, w, hall_1_26).
-path_to(hall_1_26, n, hall_1_27).
-path_to(hall_1_27, e, hall_1_28).
-path_to(hall_1_28, e, hall_1_29).
+path_to(staircase_1, up, staircase_2).
 
-path_to(hall_1_29, s, hall_1_30).
-path_to(hall_1_30, e, hall_1_31).
-path_to(hall_1_31, s, hall_1_32).
-path_to(hall_1_32, e, hall_1_33).
-path_to(hall_1_33, n, hall_1_34).
+path_to(hall1_3_e, n, hall1_2_e).
+path_to(hall1_2_e, w, hall1_2_d).
+path_to(hall1_2_d, n, hall1_1_d).
+path_to(hall1_1_d, e, hall1_1_e).
+path_to(hall1_1_e, e, hall1_1_f).
 
-path_to(hall_1_29, e, hall_1_35).
+path_to(hall1_1_f, s, hall1_2_f).
+path_to(hall1_2_f, e, hall1_2_g).
+path_to(hall1_2_g, s, hall1_3_g).
+path_to(hall1_3_g, e, hall1_3_h).
+path_to(hall1_3_h, n, hall1_2_h).
 
-path_to(hall_1_35, s, hall_1_31).
+path_to(hall1_1_f, e, hall1_1_g).
 
-path_to(hall_1_35, e, hall_1_36).
-path_to(hall_1_36, e, hall_1_37).
-path_to(hall_1_37, e, hall_1_38).
-path_to(hall_1_38, s, hall_1_39).
-path_to(hall_1_39, w, hall_1_40).
-path_to(hall_1_40, s, hall_1_41).
-path_to(hall_1_41, s, hall_1_42).
+path_to(hall1_1_g, s, hall1_2_g).
 
-path_to(hall_1_42, e, hall_1_43).
-path_to(hall_1_43, n, hall_1_44).
+path_to(hall1_1_g, e, hall1_1_h).
+path_to(hall1_1_h, e, hall1_1_i).
+path_to(hall1_1_i, e, hall1_1_j).
+path_to(hall1_1_j, s, hall1_2_j).
+path_to(hall1_2_j, w, hall1_2_i).
+path_to(hall1_2_i, s, hall1_3_i).
+path_to(hall1_3_i, s, hall1_4_i).
 
-path_to(hall_1_42, w, hall_1_45).
-path_to(hall_1_45, s, hall_1_46).
+path_to(hall1_4_i, e, hall1_4_j).
+path_to(hall1_4_j, n, hall1_3_j).
 
-path_to(hall_1_46, w, hall_1_47).
+path_to(hall1_4_i, w, hall1_4_h).
+path_to(hall1_4_h, s, hall1_5_h).
 
-path_to(hall_1_46, e, hall_1_47).
-path_to(hall_1_47, e, end).
+path_to(hall1_5_h, w, hall1_5_h).
+
+path_to(hall1_5_h, e, hall1_5_h).
+path_to(hall1_5_i, e, end).
 
 /*Second floor*/
-path_to(staircase, e, hall_2_1).
-path_to(hall_2_1, e, hall_2_2).
-path_to(hall_2_2, s, hall_2_3).
+path_to(staircase_2, e, hall2_1_b).
+path_to(hall2_1_b, e, hall2_1_c).
+path_to(hall2_1_c, s, hall2_2_c).
 
-path_to(hall_2_3, w, hall_2_4).
-path_to(hall_2_4, s, hall_2_5).
-path_to(hall_2_5, s, hall_2_6).
+path_to(hall2_2_c, w, hall2_2_b).
+path_to(hall2_2_b, s, hall2_3_b).
+path_to(hall2_3_b, s, hall2_4_b).
 
-path_to(hall_2_6, e, hall_2_7).
-path_to(hall_2_7, e, hall_2_8).
+path_to(hall2_4_b, e, hall2_4_c).
+path_to(hall2_4_c, e, hall2_4_d).
 
-path_to(hall_2_6, s, hall_2_9).
-path_to(hall_2_9, w, hall_2_10).
-path_to(hall_2_10, n, hall_2_11).
-path_to(hall_2_11, n, hall_2_12).
-path_to(hall_2_12, n, hall_2_13).
+path_to(hall2_4_b, s, hall2_5_b).
+path_to(hall2_5_b, w, hall2_5_a).
+path_to(hall2_5_a, n, hall2_4_a).
+path_to(hall2_4_a, n, hall2_3_a).
+path_to(hall2_3_a, n, hall2_2_a).
 
-path_to(hall_2_3, s, hall_2_14).
-path_to(hall_2_14, e, hall_2_15).
+path_to(hall2_2_c, s, hall2_3_c).
+path_to(hall2_3_c, e, hall2_3_d).
 
-path_to(hall_2_15, n, hall_2_16).
-path_to(hall_2_16, n, hall_2_17).
+path_to(hall2_3_d, n, hall2_2_d).
+path_to(hall2_2_d, n, hall2_1_d).
 
-path_to(hall_2_15, e, hall_2_18).
+path_to(hall2_3_d, e, hall2_3_e).
 
-path_to(hall_2_18, n, hall_2_19).
-path_to(hall_2_19, n, hall_2_20).
+path_to(hall2_3_e, n, hall2_2_e).
+path_to(hall2_2_e, n, hall2_1_e).
 
-path_to(hall_2_18, s, hall_2_21).
-path_to(hall_2_21, s, hall_2_22).
-path_to(hall_2_22, w, hall_2_23).
-path_to(hall_2_23, w, hall_2_24).
+path_to(hall2_3_e, s, hall2_4_e).
+path_to(hall2_4_e, s, hall2_5_e).
+path_to(hall2_5_e, w, hall2_5_d).
+path_to(hall2_5_d, w, hall2_5_c).
 
 /* Making paths bidirectional */
 path(FROM, DIR, TO) :-
@@ -116,17 +120,17 @@ path(FROM, DIR, TO) :-
 	path_to(TO, REVERSE_DIR, FROM).
 
 
-object_at(out-of-date_study_regulations, hall_1_4).
-object_at(poor_notes, hall_1_11).
+object_at(nieaktualny_regulamin_studiow, hall1_2_b).
+object_at(poor_notes, hall1_3_d).
 
 choose_random_locations :-
-	Potential_locations_1 = [hall_1_22, hall_1_31, hall_1_44, hall_1_47],
-	random_select(Professor_1_location, Potential_locations_1, Other_locations_1_1),
-	random_select(Professor_2_location, Other_locations_1_1, Other_locations_1_2),
-	assert(npc_at(professor, Professor_1_location)),
-	assert(npc_at(professor, Professor_2_location)),
-	forall(member(Location, Other_locations_1_2), (assert(object_at(vending_machine, Location)))),
-	Potential_locations_2 = [hall_2_8, hall_2_13, hall_2_17, hall_2_20, hall_2_24],
+	Potential_locations_1 = [hall1_3_e, hall1_2_g, hall1_3_j, hall1_5_g],
+	random_select(Profesora_1_location, Potential_locations_1, Other_locations_1_1),
+	random_select(Profesora_2_location, Other_locations_1_1, Other_locations_1_2),
+	assert(npc_at(profesora, Profesora_1_location)),
+	assert(npc_at(profesora, Profesora_2_location)),
+	forall(member(Location, Other_locations_1_2), (assert(object_at(automat, Location)))),
+	Potential_locations_2 = [hall2_4_d, hall2_2_a, hall2_1_d, hall2_1_e, hall2_5_c],
 	random_select(Jackpot_location, Potential_locations_2, Other_locations_2),
-	assert(object_at(jackpot, Jackpot_location)),
-	forall(member(Location, Other_locations_2), (assert(npc_at(dean, Location)))).
+	assert(object_at(zloty_strzal, Jackpot_location)),
+	forall(member(Location, Other_locations_2), (assert(npc_at(dziekana, Location)))).

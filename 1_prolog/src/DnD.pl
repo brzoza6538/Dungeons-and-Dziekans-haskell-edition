@@ -18,6 +18,8 @@ instructions :-
         write('e.                 -- Idź w kierunku wschodnim.'), nl,
         write('w.                 -- Idź w kierunku zachodnim.'), nl,
         write('s.                 -- Idź w kierunku południowym.'), nl,
+        write('up.                -- Idź na górę.'), nl,
+        write('down.              -- Idź na dół.'), nl,
         write('take(Object).      -- Podnieś przedmiot.'), nl,
         write('look.              -- Rozejrzyj się.'), nl,
         write('instructions.      -- Wyświetl instrukcje ponownie.'), nl,
@@ -104,6 +106,8 @@ n :- go(n).
 s :- go(s).
 e :- go(e).
 w :- go(w).
+up :- go(up).
+down :- go(down).
 
 /* This rule tells how to move in a given direction. */
 go(Direction) :-
@@ -118,11 +122,28 @@ go(_) :-
 
 /* This rule tells how to look about you. */
 look :-
+        i_am_at(staircase_1),
+        describe(staircase_1),
+		write('Widzisz schody na pierwszym piętrze.'),
+		nl,
+		find_directions(staircase_1),
+        nl.
+
+look :-
+        i_am_at(staircase_2),
+        describe(staircase_2),
+		write('Widzisz schody na drugim piętrze.'),
+		nl,
+		find_directions(staircase_2),
+        nl.
+
+look :-
         i_am_at(Place),
         describe(Place),
 		find_directions(Place),
         nl,
         notice_objects_at(Place),
+		notice_npcs_at(Place),
         nl.
 
 /* These rules set up a loop to mention all the objects
@@ -147,5 +168,6 @@ describe(_) :- write('Idziesz korytarzem.'), nl.
 
 find_directions(Place) :-
 		findall(Direction, path(Place, Direction, _), Directions),
-		write('Dostępne ruchy: '), write(Directions),
+		sort(Directions, UniqueDirections),
+		write('Dostępne ruchy: '), write(UniqueDirections),
 		nl.
