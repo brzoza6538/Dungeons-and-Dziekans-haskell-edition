@@ -1,6 +1,0 @@
--install swi-prolog
--go to src
--type "swipl"
--type "consult('DnR.pl')."
--type "start."
--play

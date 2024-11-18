@@ -26,9 +26,9 @@ instructions :-
 
 /* This rule prints out instructions and tells where you are. */
 start :-
-		write("Witaj w Dungeons and Rektors. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie."),
-        instructions,
-        look.
+		write("Witaj w Dungeons and Dziekans. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie."),
+        instructions.
+        /* look. */
 
 /* Under UNIX, the "halt." command quits Prolog but does not
    remove the output window. On a PC, however, the window
@@ -36,7 +36,7 @@ start :-
    routine requests the user to perform the final "halt." */
 finish_true :-
         nl,
-        write('Po godzinach gorącej debaty i zbijaniu kolejnych biurokratycznych absurdów, rektor w końcu ustępuje.'),
+        write('Po godzinach gorącej debaty i zbijaniu kolejnych biurokratycznych absurdów, dziekan w końcu ustępuje.'),
 		nl,
 		write('"Masz rację," mówi z nutą zmęczenia, "ten system nie jest doskonały, a twoja sytuacja jest wyjątkowa. Zobowiązuję się do umorzenia twojego warunku i wykreślenia cię z listy dłużników." Czujesz, jak ogromny ciężar spada z twoich ramion. Opuszczasz gabinet z poczuciem zwycięstwa nad systemem, który miał cię zniszczyć, i wiarą w to, że można zmieniać rzeczywistość — choćby jedną debatą na raz.".'),
         nl,
@@ -46,7 +46,7 @@ finish_true :-
 
 finish_peaceful :-
         nl,
-        write('Wręczasz złoty strzał rektorowi. Przez chwilę patrzy na ciebie z niedowierzaniem, jakbyś znalazł coś, co istniało tylko w plotkach.'),
+        write('Wręczasz złoty strzał dziekanowi. Przez chwilę patrzy na ciebie z niedowierzaniem, jakbyś znalazł coś, co istniało tylko w plotkach.'),
 		nl,
 		write('"Złoty strzał? Dawno tego nie widziałem... Masz szczęście, że nie usunęliśmy jeszcze tego przestarzałego zapisku z regulaminu. Ostateczna szansa, raz na całe życie. Długi anulowane, a ja nic nie widziałem. Tylko Nie mów nikomu, bo wszyscy zaczną mnie tym dręczyć. I nie licz na to, że drugi raz się uda."'),
 		nl,
