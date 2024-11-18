@@ -1,5 +1,6 @@
 /*Need to add optional items, npcs and location descriptions*/
 /*Maybe it would be better to describe directions as left, right, forward and backward*/
+:- use_module(library(lists)).
 
 /*First floor*/
 path(start, e, hall_1_1).
@@ -103,5 +104,17 @@ path(hall_2_22, w, hall_2_23).
 path(hall_2_23, w, hall_2_24).
 
 
-at(out-of-date_study_regulations).
-at(poor_notes).
+at(out-of-date_study_regulations, hall_1_4).
+at(poor_notes, hall_1_11).
+
+choose_random_locations :-
+	Potential_locations_1 = [hall_1_22, hall_1_31, hall_1_44, hall_1_47],
+	random_select(Professor_1_location, Potential_locations_1, Other_locations_1_1),
+	random_select(Professor_2_location, Other_locations_1_1, Other_locations_1_2),
+	assert(at(professor, Professor_1_location)),
+	assert(at(professor, Professor_2_location)),
+	forall(member(Location, Other_locations_1_2), (assert(at(vending_machine, Location)))),
+	Potential_locations_2 = [hall_2_8, hall_2_13, hall_2_17, hall_2_20, hall_2_24],
+	random_select(Jackpot_location, Potential_locations_2, Other_locations_2),
+	assert(at(jackpot, Jackpot_location)),
+	forall(member(Location, Other_locations_2), (assert(at(dean, Location)))).

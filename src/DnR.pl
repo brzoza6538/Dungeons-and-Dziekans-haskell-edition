@@ -3,6 +3,7 @@
 
 % Loading map
 :- ensure_loaded('./map.pl').
+:- choose_random_locations.
 
 i_am_at(start).
 
@@ -23,10 +24,9 @@ instructions :-
         write('halt.              -- Zakończ rozgrywkę i wyjdź.'), nl,
         nl.
 
-
 /* This rule prints out instructions and tells where you are. */
 start :-
-		write("Witaj w Dungeons and Rektors. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie.")
+		write("Witaj w Dungeons and Rektors. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie."),
         instructions,
         look.
 
@@ -70,15 +70,15 @@ finish_fake :-
 
 /*if you lose argument with keeper you dont get damaged, what if you lose against a professor*/
 finish_loser :-
-        nl,
-        write('Twoje argumenty były obiecujące, ale niestety niewystarczające. Dziekan patrzy na ciebie z wyrazem rozczarowania, a jego głos staje się jeszcze bardziej chłodny i stanowczy.'),
+		nl,
+		write('Twoje argumenty były obiecujące, ale niestety niewystarczające. Dziekan patrzy na ciebie z wyrazem rozczarowania, a jego głos staje się jeszcze bardziej chłodny i stanowczy.'),
 		nl,
 		write('"W tej sytuacji na myśl przychodzi mi tylko jedno rozwiązanie. Zostaniesz naszym nowym dozorcą."'),
 		nl,
 		write('Zanim zdążysz zaprotestować, zostajesz wciągnięty w machinę, której nie udało ci się pokonać. Uczelnia, której kiedyś byłeś częścią, staje się twoim więzieniem.'),
 		nl,
 		nl,
-		write('Koniec rozgrywki. Wpisz "halt. by opuścić grę."'),
+		write('Koniec rozgrywki. Wpisz "halt. by opuścić grę."').
 
 /* Rules from example*/
 /* These rules describe how to pick up an object. */
