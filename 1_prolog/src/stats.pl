@@ -1,4 +1,4 @@
-:- dynamic curr_energy/1, curr_attack/1, curr_defense/1, curr_charisma/1.
+:- dynamic curr_energy/1, curr_attack/1, curr_defense/1, curr_charisma/1, energy_cap/1.
 
 curr_energy(20).
 curr_attack(3).

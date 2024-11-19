@@ -1,4 +1,4 @@
-:- dynamic i_am_at/1, obcjet_at/2, npc_at/2, holding/1, used/1.
+:- dynamic i_am_at/1, object_at/2, npc_at/2, holding/1, used/1.
 :- retractall(object_at(_, _)), retractall(npc_at(_, _)), retractall(i_am_at(_)), retractall(used(_)).
 
 % Loading map
@@ -66,6 +66,7 @@ drop(X) :-
         holding(X),
         i_am_at(Place),
         retract(holding(X)),
+		assert(object_at(X, Place)),
         item(X, Name, _, _, _),
         format("Upuściłeś ~w.~n", [Name]),
         decrease_stat(X),

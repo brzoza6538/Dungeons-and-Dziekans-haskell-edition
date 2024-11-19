@@ -130,11 +130,13 @@ object_at(slabe_notatki, hall1_3_d).
 
 choose_random_locations :-
 	Potential_locations_1 = [hall1_3_e, hall1_2_g, hall1_3_j, hall1_5_g],
-	random_select(Lecturer_1_location, Potential_locations_1, Other_locations_1_1),
-	random_select(Lecturer_2_location, Other_locations_1_1, Other_locations_1_2),
-	assert(npc_at(lecturer, Lecturer_1_location)),
-	assert(npc_at(lecturer, Lecturer_2_location)),
-	forall(member(Location, Other_locations_1_2), (assert(npc_at(automat, Location)))),
+	random_select(Lecturer_location, Potential_locations_1, Other_locations_1_1),
+	assert(npc_at(lecturer, Lecturer_location)),
+	random_select(Automat_1_location, Other_locations_1_1, Other_locations_1_2),
+	assert(npc_at(automat_1, Automat_1_location)),
+	random_member(Automat_2_location, Other_locations_1_2),
+	assert(npc_at(automat_2, Automat_2_location)),
+	
 	Potential_locations_2 = [hall2_4_d, hall2_2_a, hall2_1_d, hall2_1_e, hall2_5_c],
 	random_select(Jackpot_location, Potential_locations_2, Other_locations_2),
 	assert(object_at(zloty_strzal, Jackpot_location)),
