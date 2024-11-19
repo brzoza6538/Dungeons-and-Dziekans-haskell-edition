@@ -126,7 +126,7 @@ alt_info(start, "Stoisz przed drzwiami dziekanatu.").
 
 
 object_at(nieaktualny_regulamin_studiow, hall1_2_b).
-object_at(poor_notes, hall1_3_d).
+object_at(slabe_notatki, hall1_3_d).
 
 choose_random_locations :-
 	Potential_locations_1 = [hall1_3_e, hall1_2_g, hall1_3_j, hall1_5_g],
