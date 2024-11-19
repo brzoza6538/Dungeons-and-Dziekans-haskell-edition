@@ -24,8 +24,10 @@ interact_with(dean) :-
     write('Dostępne odpowiedzi:'), nl,
     write('1. A nie moglibyśmy jakoś umorzyć tych warunków?'), nl,
     write('2. Dobrze, udowodnię swoją wiedzę'), nl,
-    /* only available when user has zloty_strzal item */
-    write('3. Mam złoty strzał, a regulamin mówi jasno - wszystkie warunki zostają wtedy umorzone; prawda?'), nl,
+    ( holding(zloty_strzal) ->
+        write('3. Mam złoty strzał, a regulamin mówi jasno - wszystkie warunki zostają wtedy umorzone; prawda?'), nl
+    ; true
+    ),
     get_user_choice(Choice),
     dean_interaction(Choice).
 
@@ -34,11 +36,15 @@ get_user_choice(Choice) :-
     read(Choice).
 
 
+chance_success(Requirement) :-
+    Requirement >= 1,
+    random_between(1, 2, Outcome),
+    Outcome = 1.
+
 
 caretaker_interaction(1) :-
-    /* random for success only when curr_charisma >= 1 */
-    random_between(1, 2, Outcome),
-    ( Outcome = 1 ->
+    curr_charisma(Charisma),
+    ( chance_success(Charisma) ->
         write('<LORE>'),
         write('Dozorca daje się przekonać. Możesz teraz wyjść z budynku.'), nl
         /* upewnienie się czy chcesz i final scene */
@@ -58,8 +64,8 @@ caretaker_interaction(3) :-
 
 lecturer_interaction(1) :-
     /* random for success only when curr_charisma >= 1 */
-    random_between(1, 2, Outcome),
-    ( Outcome = 1 ->
+    curr_charisma(Charisma),
+    ( chance_success(Charisma) ->
         write('Wykładowca daje się przekonać. Możesz iść dalej.'), nl
     ; 
         write('Wykładowca nie daje się przekonać. Rozpoczynasz walkę.'), nl,
@@ -74,8 +80,8 @@ lecturer_interaction(2) :-
 
 dean_interaction(1) :-
     /* random for success only when curr_charisma >= 1 */
-    random_between(1, 2, Outcome),
-    ( Outcome = 1 ->
+    curr_charisma(Charisma),
+    ( chance_success(Charisma) ->
         write('Dziekan daje się przekonać. Możesz iść dalej.'), nl
     ; 
         write('Dziekan nie daje się przekonać. Rozpoczynasz walkę.'), nl,
@@ -88,5 +94,6 @@ dean_interaction(2) :-
 
 /* only when zloty_strzal acquired */
 dean_interaction(3) :-
+    holding(zloty_strzal),
     write('<LORE>'), nl.
     /* tu już chyba ending scene */

@@ -74,9 +74,9 @@ path_to(hall1_4_j, n, hall1_3_j).
 path_to(hall1_4_i, w, hall1_4_h).
 path_to(hall1_4_h, s, hall1_5_h).
 
-path_to(hall1_5_h, w, hall1_5_h).
+path_to(hall1_5_h, w, hall1_5_g).
 
-path_to(hall1_5_h, e, hall1_5_h).
+path_to(hall1_5_h, e, hall1_5_i).
 path_to(hall1_5_i, e, end).
 
 /*Second floor*/
@@ -130,12 +130,12 @@ object_at(poor_notes, hall1_3_d).
 
 choose_random_locations :-
 	Potential_locations_1 = [hall1_3_e, hall1_2_g, hall1_3_j, hall1_5_g],
-	random_select(Profesora_1_location, Potential_locations_1, Other_locations_1_1),
-	random_select(Profesora_2_location, Other_locations_1_1, Other_locations_1_2),
-	assert(npc_at(profesora, Profesora_1_location)),
-	assert(npc_at(profesora, Profesora_2_location)),
+	random_select(Lecturer_1_location, Potential_locations_1, Other_locations_1_1),
+	random_select(Lecturer_2_location, Other_locations_1_1, Other_locations_1_2),
+	assert(npc_at(lecturer, Lecturer_1_location)),
+	assert(npc_at(lecturer, Lecturer_2_location)),
 	forall(member(Location, Other_locations_1_2), (assert(object_at(automat, Location)))),
 	Potential_locations_2 = [hall2_4_d, hall2_2_a, hall2_1_d, hall2_1_e, hall2_5_c],
 	random_select(Jackpot_location, Potential_locations_2, Other_locations_2),
 	assert(object_at(zloty_strzal, Jackpot_location)),
-	forall(member(Location, Other_locations_2), (assert(npc_at(dziekana, Location)))).
+	forall(member(Location, Other_locations_2), (assert(npc_at(dean, Location)))).
