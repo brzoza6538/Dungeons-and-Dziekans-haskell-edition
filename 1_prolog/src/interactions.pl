@@ -16,6 +16,7 @@ interact_with(lecturer) :-
     write('Dostępne odpowiedzi:'), nl,
     write('1. Pierwsze wrażenie jest najważniejsze. Dzień dobry panie magistrze doktorze doktorancki od spraw bardzo ważnych'), nl,
     write('2. Nie mogę ryzykować. Skończę tą odpytkę zanim nawet się zacznie '), nl,
+	assert(npc_at(caretaker, hall1_5_i)),
     get_user_choice(Choice),
     lecturer_interaction(Choice).
 
@@ -121,8 +122,11 @@ chance_success2(Requirement) :-
 caretaker_interaction(1) :-
     curr_charisma(Charisma),
     ( chance_success(Charisma) ->
-        write('<LORE>'),
-        write('Dozorca daje się przekonać. Możesz teraz wyjść z budynku.'), nl
+        write('"Hej, czy ty nie opłaciłeś warunku i chcesz teraz wyjść na pewniaka, bez konfrontacji z dziekanem?" pyta'), nl,
+		write('Milczysz'), nl,
+		write('"Wiesz," zaczyna powoli, "właściwie to przypominasz mi mnie samego z czasów studiów. Też walczyłem z systemem, dyskutowałem, kombinowałem, jak ominąć regulamin. Niestety nie udało się i zobacz, jak skończyłem. Nie chciałbym, żeby kogoś jeszcze to spotkało."'), nl,
+        write('Dozorca ustąpił. Możesz teraz wyjść z budynku.'), nl,
+		finish_fake
         /* upewnienie się czy chcesz i final scene */
     ; 
         write('Dozorca nie daje się przekonać. Rozpoczynasz walkę.'), nl,
@@ -134,7 +138,8 @@ caretaker_interaction(2) :-
     start_battle(caretaker).
 
 caretaker_interaction(3) :-
-    write('<LORE>').
+    write('"Hej! Co ty robisz tchórzu? Nie wypuszczę Cię! Przynieś kartkę od dziekana, że opłaciłeś warunek"'). 
+	/*it was supposed to be lore here*/
 
 caretaker_interaction(_) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
@@ -179,7 +184,8 @@ dean_interaction(2) :-
 
 dean_interaction(3) :-
     holding(zloty_strzal),
-    write('<LORE>'), nl.
+    finish_peaceful. 
+	/*it was supposed to be lore here*/
 
 dean_interaction(_) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
