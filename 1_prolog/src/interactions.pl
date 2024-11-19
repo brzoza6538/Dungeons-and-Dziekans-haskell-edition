@@ -22,19 +22,10 @@ interact_with(dean) :-
     write(' Zauważasz niewielki błysk na końcu korytarzam. Z zaciekawieniem postanawisz podejść bliżej. Jednak szybko żałujesz tej decyzji kiedy Z cienia wyłania się dziekan szczerząc się do ciebie   '), nl, nl,
     write('Twoje żałosne próby zdania semestru kosztowały mnie już wystarczająco dużo czasu. Twój czas dobiegł końca, mówi z sadystyczną satysfakcją '),
     write('Dostępne odpowiedzi:'), nl,
-<<<<<<< HEAD
-    write('1. A nie moglibyśmy jakoś umorzyć tych warunków?'), nl,
-    write('2. Dobrze, udowodnię swoją wiedzę'), nl,
-    ( holding(zloty_strzal) ->
-        write('3. Mam złoty strzał, a regulamin mówi jasno - wszystkie warunki zostają wtedy umorzone; prawda?'), nl
-    ; true
-    ),
-=======
     write('1. Nie jestem już tym samym głupim studentem którego pan znał. Nie poddam się bez walki'), nl,
     write('2. Proszę nie, przysięgam że moje zaległe warunki to przeszłość'), nl,
     /* only available when user has zloty_strzal item */
     write('3. Niech pan patrzy co trzymam w ręce, to złoty strzał. Powołuję się na pradawne prawa tego świata, nie ma pan nade mną władzy'), nl,
->>>>>>> origin/dialog
     get_user_choice(Choice),
     dean_interaction(Choice).
 
