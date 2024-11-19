@@ -19,7 +19,7 @@ play_battle(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
         write('Przegrałeś walkę.'), nl,
         finish_loser
     ; NPC_Energy =< 0 ->
-        write('Pokonałeś '), write(NPC), write('!'), nl
+        write('Pokonałeś '), write(NPC), write('!'), nl, win(1)
     ; battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC)
     ).
 
@@ -39,7 +39,7 @@ handle_choice(1, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
         write('Pokonałeś '), write(NPC), write('!'), nl, !;
       npc_attack(PlayerEnergy, NewPlayerEnergy, NPC_Attack),
       play_battle(NewPlayerEnergy, NewNPC_Energy, NPC_Attack, NPC_Defense, NPC), !
-    ), write("CHHUJ"), !.
+    ), !.
 
 handle_choice(2, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     EnergyRegen is 3,

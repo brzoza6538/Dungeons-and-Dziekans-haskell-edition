@@ -1,3 +1,5 @@
+:- ensure_loaded('./endings.pl').
+
 /* Interaction with caretaker */
 interact_with(caretaker) :-
     write('Zauważasz starszego mężczyznę stojącego przed wejściem. Czy zawsze tutaj stał?'), nl, nl, 
@@ -141,10 +143,12 @@ caretaker_interaction(3) :-
     write('"Hej! Co ty robisz tchórzu? Nie wypuszczę Cię! Przynieś kartkę od dziekana, że opłaciłeś warunek"'). 
 	/*it was supposed to be lore here*/
 
+/*
 caretaker_interaction(_) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
     get_user_choice(Choice),
     caretaker_interaction(Choice).
+*/
 
 
 lecturer_interaction(1) :-
@@ -161,11 +165,12 @@ lecturer_interaction(2) :-
     write('Postanawiasz zaatakować wykładowcę!'), nl,
     start_battle(lecturer).
 
+/*
 lecturer_interaction(_) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
     get_user_choice(Choice),
     lecturer_interaction(Choice).
-
+*/
 
 
 dean_interaction(1) :-
@@ -180,14 +185,18 @@ dean_interaction(1) :-
 
 dean_interaction(2) :-
     write('Postanawiasz zaatakować dziekana!'), nl,
-    start_battle(dean).
+    start_battle(dean),
+    win(1),
+    finish_true.
 
 dean_interaction(3) :-
     holding(zloty_strzal),
     finish_peaceful. 
 	/*it was supposed to be lore here*/
 
+/*
 dean_interaction(_) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
     get_user_choice(Choice),
     dean_interaction(Choice).
+*/
