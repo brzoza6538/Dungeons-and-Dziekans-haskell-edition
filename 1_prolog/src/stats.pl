@@ -4,6 +4,7 @@ curr_energy(20).
 curr_attack(3).
 curr_defense(1).
 curr_charisma(0).
+energy_cap(20).
 
 game_start_boost :-
     random_between(1, 4, Choice),
@@ -13,7 +14,8 @@ game_start_boost :-
 /* Random stat boost at the beginning of the game */
 apply_upgrade(1) :-
     retractall(curr_energy(_)),
-    assert(curr_energy(40)).
+    assert(curr_energy(40)),
+    assert(energy_cap(40)).
 
 apply_upgrade(2) :-
     retractall(curr_attack(_)),
@@ -37,17 +39,6 @@ stats :-
         write('Siła: '), write(S), nl,
         write('Obrona: '), write(D), nl,
         write('Charyzma: '), write(C), nl.
-
-
-dean_energy(50).
-dean_attack(10).
-dean_defense(4).
-
-
-lecturer_energy(20).
-lecturer_attack(5).
-lecturer_defense(0).
-
 
 
 /* Boosting stats */

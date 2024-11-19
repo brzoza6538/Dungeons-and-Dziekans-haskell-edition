@@ -60,6 +60,10 @@ caretaker_interaction(2) :-
 caretaker_interaction(3) :-
     write('<LORE>').
 
+caretaker_interaction(_) :-
+    write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
+    get_user_choice(Choice),
+    caretaker_interaction(Choice).
 
 
 lecturer_interaction(1) :-
@@ -75,6 +79,11 @@ lecturer_interaction(1) :-
 lecturer_interaction(2) :-
     write('Postanawiasz zaatakować wykładowcę!'), nl,
     start_battle(lecturer).
+
+lecturer_interaction(_) :-
+    write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
+    get_user_choice(Choice),
+    lecturer_interaction(Choice).
 
 
 
@@ -92,8 +101,11 @@ dean_interaction(2) :-
     write('Postanawiasz zaatakować dziekana!'), nl,
     start_battle(dean).
 
-/* only when zloty_strzal acquired */
 dean_interaction(3) :-
     holding(zloty_strzal),
     write('<LORE>'), nl.
-    /* tu już chyba ending scene */
+
+dean_interaction(_) :-
+    write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
+    get_user_choice(Choice),
+    dean_interaction(Choice).
