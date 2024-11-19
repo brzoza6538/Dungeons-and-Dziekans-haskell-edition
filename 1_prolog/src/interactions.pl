@@ -1,33 +1,40 @@
 /* Interaction with caretaker */
 interact_with(caretaker) :-
-    write('Spotykasz dozorcę.'), nl, nl,
-    write('<LORE>'), nl,
+    write('Zauważasz starszego mężczyznę stojącego przed wejściem. Czy zawsze tutaj stał?'), nl, nl, #tu tylko foreshadowing, historia dozorcy dopiero podczas rozmowy
+    write('Jego posiwiałe włosy i zmarszczki opowiadają historię o zmarnowanej młodości i życiu pełnego stresu i żalów. Jednak nie masz czasu na sympatię. Kiedy tylko cię zauważył wiedziałeś że nie przepuści cię doborwolnie' ), nl,
     write('Dostępne odpowiedzi:'), nl,
-    write('1. Czy mógłbyś mnie po prostu wypuścić?'), nl,
-    write('2. Tak? No to rozpocznijmy walkę!'), nl,
-    write('3. Rozumiem, w takim razie po prostu wrócę.'), nl,
+    write('1. Przepraszam, muszę przejść'), nl,
+    write('2. *Zaczynasz przeglądać notatki, przygotowywując się na najgorsze*'), nl, 
+    write('3. *powoli odsuwasz się z pola widzenia stróża*'), nl,
     get_user_choice(Choice),
     caretaker_interaction(Choice).
 
 interact_with(lecturer) :-
-    write('Spotykasz wykładowcę.'), nl, nl,
-    write('<LORE>'), nl,
+    write('Przed tobą pojawia się dziki wykładowca. Nie jesteś pewnien jego nastawienia. Lepiej uważać'), nl, nl,
+    write('Pragnie cię odpytać czy jedynie porozmawiać?'), nl,
     write('Dostępne odpowiedzi:'), nl,
-    write('1. Naprawdę, ja to wiem, czy musimy to robić?'), nl,
-    write('2. Dobrze, udowodnię sowją wiedzę.'), nl,
+    write('1. Pierwsze wrażenie jest najważniejsze. Dzień dobry panie magistrze doktorze doktorancki od spraw bardzo ważnych'), nl,
+    write('2. Nie mogę ryzykować. Skończę tą odpytkę zanim nawet się zacznie '), nl,
     get_user_choice(Choice),
     lecturer_interaction(Choice).
 
 interact_with(dean) :-
-    write('Spotykasz dziekana.'), nl, nl,
-    write('<LORE>'), nl,
+    write(' Zauważasz niewielki błysk na końcu korytarzam. Z zaciekawieniem postanawisz podejść bliżej. Jednak szybko żałujesz tej decyzji kiedy Z cienia wyłania się dziekan szczerząc się do ciebie   '), nl, nl,
+    write('Twoje żałosne próby zdania semestru kosztowały mnie już wystarczająco dużo czasu. Twój czas dobiegł końca, mówi z sadystyczną satysfakcją '),
     write('Dostępne odpowiedzi:'), nl,
+<<<<<<< HEAD
     write('1. A nie moglibyśmy jakoś umorzyć tych warunków?'), nl,
     write('2. Dobrze, udowodnię swoją wiedzę'), nl,
     ( holding(zloty_strzal) ->
         write('3. Mam złoty strzał, a regulamin mówi jasno - wszystkie warunki zostają wtedy umorzone; prawda?'), nl
     ; true
     ),
+=======
+    write('1. Nie jestem już tym samym głupim studentem którego pan znał. Nie poddam się bez walki'), nl,
+    write('2. Proszę nie, przysięgam że moje zaległe warunki to przeszłość'), nl,
+    /* only available when user has zloty_strzal item */
+    write('3. Niech pan patrzy co trzymam w ręce, to złoty strzał. Powołuję się na pradawne prawa tego świata, nie ma pan nade mną władzy'), nl,
+>>>>>>> origin/dialog
     get_user_choice(Choice),
     dean_interaction(Choice).
 
