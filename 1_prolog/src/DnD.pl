@@ -1,5 +1,5 @@
-:- dynamic i_am_at/1, at/2, holding/1.
-:- retractall(object_at(_, _)), retractall(npc_at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
+:- dynamic i_am_at/1, obcjet_at/2, npc_at/2, holding/1, used/1.
+:- retractall(object_at(_, _)), retractall(npc_at(_, _)), retractall(i_am_at(_)), retractall(used(_)).
 
 % Loading map
 :- ensure_loaded('./map.pl').
@@ -13,7 +13,6 @@
 
 i_am_at(start).
 
-/*Changed rules*/
 /* This rule just writes out game instructions. */
 instructions :-
         nl,
@@ -60,6 +59,22 @@ take(X) :-
 take(_) :-
         write('Nie ma tego tutaj.'),
         nl.
+
+
+/* These rules describe how to put down an object. */
+drop(X) :-
+        holding(X),
+        i_am_at(Place),
+        retract(holding(X)),
+        item(X, Name, _, _, _),
+        format("Upuściłeś ~w.~n", [Name]),
+        decrease_stat(X),
+        !, nl.
+
+drop(_) :-
+        write('You aren''t holding it!'),
+        nl.
+
 
 /* These rules define the direction letters as calls to go/1. */
 n :- go(n).

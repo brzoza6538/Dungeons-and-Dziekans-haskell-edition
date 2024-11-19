@@ -134,7 +134,7 @@ choose_random_locations :-
 	random_select(Profesora_2_location, Other_locations_1_1, Other_locations_1_2),
 	assert(npc_at(profesora, Profesora_1_location)),
 	assert(npc_at(profesora, Profesora_2_location)),
-	forall(member(Location, Other_locations_1_2), (assert(object_at(automat, Location)))),
+	forall(member(Location, Other_locations_1_2), (assert(npc_at(automat, Location)))),
 	Potential_locations_2 = [hall2_4_d, hall2_2_a, hall2_1_d, hall2_1_e, hall2_5_c],
 	random_select(Jackpot_location, Potential_locations_2, Other_locations_2),
 	assert(object_at(zloty_strzal, Jackpot_location)),

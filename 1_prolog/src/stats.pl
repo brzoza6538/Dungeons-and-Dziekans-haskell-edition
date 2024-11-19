@@ -56,32 +56,37 @@ boost_stat(Item) :-
     Stat \= none,
     update_stat(Stat, Value).
 
+decrease_stat(Item) :-
+    item(Item, _, _, Stat, Value),
+    Stat \= none,
+    update_stat(Stat, -Value).
+
 update_stat(attack, Value) :-
     curr_attack(Current),
     New is Current + Value,
     retract(curr_attack(Current)),
     assert(curr_attack(New)),
-    format('Twoja siła wzrosła o ~w!~n', [Value]).
+    format('Twoja siła zmieniła się o ~w!~n', [Value]).
 
 update_stat(defense, Value) :-
     curr_defense(Current),
     New is Current + Value,
     retract(curr_defense(Current)),
     assert(curr_defense(New)),
-    format('Twoja obrona wzrosła o ~w!~n', [Value]).
+    format('Twoja obrona zmieniła się o ~w!~n', [Value]).
 
 update_stat(energy, Value) :-
     curr_energy(Current),
     New is Current + Value,
     retract(curr_energy(Current)),
     assert(curr_energy(New)),
-    format('Twoja energia wzrosła o ~w!~n', [Value]).
+    format('Twoja energia zmieniła się o ~w!~n', [Value]).
 
 update_stat(charisma, Value) :-
     curr_charisma(Current),
     New is Current + Value,
     retract(curr_charisma(Current)),
     assert(curr_charisma(New)),
-    format('Twoja charyzma wzrosła o ~w!~n', [Value]).
+    format('Twoja charyzma zmieniła się o ~w!~n', [Value]).
 
 

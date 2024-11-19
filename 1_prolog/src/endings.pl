@@ -19,7 +19,11 @@ finish_peaceful :-
 		nl.
 
 finish_lucky :-
-        nl,
+		nl,
+		write('Zapada cisza. Dziekan spogląda na ciebie zmęczonym wzrokiem, po czym powoli sięga po twoje dokumenty.'),
+		nl,
+		write('"Powiem tak - zazwyczaj nie wierzę w takie historie. Ale masz coś w sobie. Może to szczerość, a może ta twoja niezachwiana pewność siebie. W porządku. Tym razem zrobię wyjątek."'),
+		nl,
 		nl,
 		write('Koniec rozgrywki. Wpisz "halt. by opuścić grę."'),
 		nl.
