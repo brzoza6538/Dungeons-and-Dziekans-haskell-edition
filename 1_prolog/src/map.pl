@@ -1,6 +1,7 @@
 /*Need to add optional items, npcs and location descriptions*/
 /*Maybe it would be better to describe directions as left, right, forward and backward*/
 :- use_module(library(lists)).
+:- dynamic alt_info/2.
 
 reverse_dir(n, s).
 reverse_dir(s, n).
@@ -118,6 +119,10 @@ path(FROM, DIR, TO) :-
 path(FROM, DIR, TO) :-
 	reverse_dir(DIR, REVERSE_DIR),
 	path_to(TO, REVERSE_DIR, FROM).
+
+
+/* Alternative position descriptions */
+alt_info(start, "Stoisz przed drzwiami dziekanatu.").
 
 
 object_at(nieaktualny_regulamin_studiow, hall1_2_b).
