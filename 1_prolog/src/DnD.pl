@@ -5,6 +5,8 @@
 :- ensure_loaded('./map.pl').
 :- ensure_loaded('./stats.pl').
 :- ensure_loaded('./items.pl').
+:- ensure_loaded('./interactions.pl').
+:- ensure_loaded('./battle.pl').
 :- ensure_loaded('./endings.pl').
 :- choose_random_locations.
 :- game_start_boost.
@@ -116,8 +118,8 @@ notice_objects_at(Place) :-
 notice_objects_at(_).
 
 notice_npcs_at(Place) :-
-        npc_at(X, Place),
-        write('Spotykasz '), write(X), write('.'), nl,
+        npc_at(NPC, Place),
+        interact_with(NPC),
         fail.
 
 notice_npcs_at(_).
