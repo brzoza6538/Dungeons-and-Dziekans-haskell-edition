@@ -12,33 +12,34 @@ start_battle(NPC) :-
     write('Rozpoczyna się walka z '), write(NPC), write('!'), nl,
     npc_stats(NPC, NPC_Energy, NPC_Attack, NPC_Defense),
     curr_energy(PlayerEnergy),
-    battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
+    play_battle(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
 
-
-battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
+play_battle(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     ( PlayerEnergy =< 0 ->
         write('Przegrałeś walkę.'), nl,
-        finish_loser, !;
-      NPC_Energy =< 0 ->
-        write('Pokonałeś '), write(NPC), write('!'), nl, !;
-      write('Twoja energia: '), write(PlayerEnergy), nl,
-      write('Energia przeciwnika: '), write(NPC_Energy), nl,
-      write('Co chcesz zrobić?'), nl,
-      write('1. Atakuj'), nl,
-      write('2. Czekaj i regeneruj energię'), nl,
-      nl, write('Wybór: '),
-      read(Choice),
-      handle_choice(Choice, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC)
+        finish_loser
+    ; NPC_Energy =< 0 ->
+        write('Pokonałeś '), write(NPC), write('!'), nl
+    ; battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC)
     ).
 
+battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
+    write('Twoja energia: '), write(PlayerEnergy), nl,
+    write('Energia przeciwnika: '), write(NPC_Energy), nl,
+    write('Co chcesz zrobić?'), nl,
+    write('1. Atakuj'), nl,
+    write('2. Czekaj i regeneruj energię'), nl,
+    nl, write('Wybór: '),
+    read(Choice),
+    handle_choice(Choice, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
 
 handle_choice(1, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     player_attack(NPC_Energy, NewNPC_Energy, NPC_Defense),
     ( NewNPC_Energy =< 0 ->
         write('Pokonałeś '), write(NPC), write('!'), nl, !;
       npc_attack(PlayerEnergy, NewPlayerEnergy, NPC_Attack),
-      battle_loop(NewPlayerEnergy, NewNPC_Energy, NPC_Attack, NPC_Defense, NPC)
-    ).
+      play_battle(NewPlayerEnergy, NewNPC_Energy, NPC_Attack, NPC_Defense, NPC), !
+    ), write("CHHUJ"), !.
 
 handle_choice(2, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     EnergyRegen is 3,
@@ -47,11 +48,14 @@ handle_choice(2, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     Regained is NewPlayerEnergy - PlayerEnergy,
     write('Regenerujesz '), write(Regained), write(' punktów energii.'), nl,
     npc_attack(NewPlayerEnergy, FinalPlayerEnergy, NPC_Attack),
-    battle_loop(FinalPlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
+    play_battle(FinalPlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC),
+    !.
 
+/*
 handle_choice(_, PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC) :-
     write('Niepoprawna opcja. Spróbuj ponownie.'), nl,
-    battle_loop(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
+    play_battle(PlayerEnergy, NPC_Energy, NPC_Attack, NPC_Defense, NPC).
+*/
 
 
 player_attack(NPC_Energy, NewNPC_Energy, NPC_Defense) :-

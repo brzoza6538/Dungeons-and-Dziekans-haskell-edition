@@ -1,6 +1,7 @@
 /* Interaction with caretaker */
 interact_with(caretaker) :-
-    write('Zauważasz starszego mężczyznę stojącego przed wejściem. Czy zawsze tutaj stał?'), nl, nl, #tu tylko foreshadowing, historia dozorcy dopiero podczas rozmowy
+    write('Zauważasz starszego mężczyznę stojącego przed wejściem. Czy zawsze tutaj stał?'), nl, nl, 
+    /* tu tylko foreshadowing, historia dozorcy dopiero podczas rozmowy */
     write('Jego posiwiałe włosy i zmarszczki opowiadają historię o zmarnowanej młodości i życiu pełnego stresu i żalów. Jednak nie masz czasu na sympatię. Kiedy tylko cię zauważył wiedziałeś że nie przepuści cię doborwolnie' ), nl,
     write('Dostępne odpowiedzi:'), nl,
     write('1. Przepraszam, muszę przejść'), nl,
@@ -111,6 +112,11 @@ chance_success(Requirement) :-
     random_between(1, 2, Outcome),
     Outcome = 1.
 
+chance_success2(Requirement) :-
+    Requirement >= 1,
+    random_between(1, 2, Outcome),
+    Outcome = 1.
+
 
 caretaker_interaction(1) :-
     curr_charisma(Charisma),
@@ -158,9 +164,9 @@ lecturer_interaction(_) :-
 
 
 dean_interaction(1) :-
-    /* random for success only when curr_charisma >= 1 */
+    /* random for success only when curr_charisma >= 2 */
     curr_charisma(Charisma),
-    ( chance_success(Charisma) ->
+    ( chance_success2(Charisma) ->
         write('Dziekan daje się przekonać. Możesz iść dalej.'), nl
     ; 
         write('Dziekan nie daje się przekonać. Rozpoczynasz walkę.'), nl,
