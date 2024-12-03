@@ -92,7 +92,7 @@ gameLoop gameState paths = do
             takeItem argument
             gameLoop gameState paths
         "look" -> do
-            printLines ["Rozglądasz się", "[NIE ZAIMPLEMENTOWANO]", ""]
+            putStrLn (describeLocation (currentLocation gameState))
             gameLoop gameState paths
         "stats" -> do
             printLines ["Twoje statystyki:", "[NIE ZAIMPLEMENTOWANO]", ""]
@@ -114,4 +114,4 @@ main = do
     printInstructions
     let initialLocation = Location 1 "start"
     let initialState = GameState { currentLocation = initialLocation }
-    gameLoop initialState paths
+    gameLoop initialState (bidirectionalPaths paths)
