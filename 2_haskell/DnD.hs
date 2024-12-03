@@ -2,6 +2,10 @@
 -- Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska
 import Data.Char (isSpace)
 
+import GameMap
+
+data GameState = GameState { currentLocation :: Location }
+
 --  utils
 printLines :: [String] -> IO ()
 printLines xs = putStr (unlines xs)
@@ -17,7 +21,6 @@ parseCommand input =
     let (cmd:args) = words input ++ [""]
         trimmedArgs = dropWhile isSpace (reverse (dropWhile isSpace (reverse (unwords args))))
     in (cmd, trimmedArgs)
-
 
 instructionsText = [
     "",
@@ -46,14 +49,29 @@ introductionText = [
 
 printIntroduction = printLines introductionText
 
+pathExists :: Location -> String -> [Path] -> Bool
+pathExists currLocation dir ps = any (\(from, direction, _) -> from == currLocation && direction == dir) ps
 
-go :: String -> IO ()
-go direction
+getNewLocation :: Location -> String -> [Path] -> Location
+getNewLocation currentLocation dir paths =
+    to  -- Bezpośrednio zwracamy 'to', które jest w pasującej ścieżce
+    where
+        (from, direction, to) = head $ filter (\(from, direction, _) -> from == currentLocation && direction == dir) paths
+
+go :: String -> GameState -> [Path] -> IO GameState
+go direction gameState paths
     | direction `elem` ["n", "e", "w", "s", "up", "down"] = do
-        putStrLn $ "Idziesz w kierunku " ++ direction ++ ". [NIE ZAIMPLEMENTOWANO]"
+        if pathExists (currentLocation gameState) direction paths
+            then do
+                let newLocation = getNewLocation (currentLocation gameState) direction paths
+                putStrLn $ "Idziesz w kierunku " ++ direction ++ "."
+                return gameState { currentLocation = newLocation }
+            else do
+                putStrLn "Nie możesz tam iść."
+                return gameState
     | otherwise = do
-        putStrLn "Nieznany kierunek."
-
+        putStrLn "Nie możesz tam iść."
+        return gameState
 
 takeItem :: String -> IO ()
 takeItem item
@@ -62,31 +80,38 @@ takeItem item
     | otherwise = do
         putStrLn $ "Podnosisz przedmiot: " ++ item ++ ". [NIE ZAIMPLEMENTOWANO]"
 
-
--- note that the game loop may take the game state as
--- an argument, eg. gameLoop :: State -> IO ()
-gameLoop :: IO ()
-gameLoop = do
+gameLoop :: GameState -> [Path] -> IO ()
+gameLoop gameState paths = do
     cmd <- readCommand
     let (action, argument) = parseCommand cmd
     case action of
-        "go" ->     do go argument
-                       gameLoop
-        "take" ->   do takeItem argument
-                       gameLoop
-        "look" ->   do printLines ["Rozglądasz się", "[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "stats" ->  do printLines ["Twoje statystyki:", "[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "items" ->  do printLines ["Twoje przedmioty:", "[NIE ZAIMPLEMENTOWANO]", ""]
-        "instructions" -> do printInstructions
-                             gameLoop
-        "quit" -> return ()
-        _ -> do printLines ["Nieznana komenda.", ""]
-                gameLoop
+        "go" -> do
+            newGameState <- go argument gameState paths
+            gameLoop newGameState paths
+        "take" -> do
+            takeItem argument
+            gameLoop gameState paths
+        "look" -> do
+            printLines ["Rozglądasz się", "[NIE ZAIMPLEMENTOWANO]", ""]
+            gameLoop gameState paths
+        "stats" -> do
+            printLines ["Twoje statystyki:", "[NIE ZAIMPLEMENTOWANO]", ""]
+            gameLoop gameState paths
+        "items" -> do
+            printLines ["Twoje przedmioty:", "[NIE ZAIMPLEMENTOWANO]", ""]
+            gameLoop gameState paths
+        "instructions" -> do
+            printInstructions
+            gameLoop gameState paths
+        "quit" -> return ()  -- Zakończenie gry, ale bez zmiany stanu gry
+        _ -> do
+            printLines ["Nieznana komenda.", ""]
+            gameLoop gameState paths
 
-
+main :: IO ()
 main = do
     printIntroduction
     printInstructions
-    gameLoop
+    let initialLocation = Location 1 "start"
+    let initialState = GameState { currentLocation = initialLocation }
+    gameLoop initialState paths
