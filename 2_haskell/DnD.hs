@@ -1,6 +1,6 @@
 -- Dungeons and Dziekans
 -- Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska
-
+import Data.Char (isSpace)
 
 --  utils
 printLines :: [String] -> IO ()
@@ -12,18 +12,24 @@ readCommand = do
     xs <- getLine
     return xs
 
+parseCommand :: String -> (String, String)
+parseCommand input =
+    let (cmd:args) = words input ++ [""]
+        trimmedArgs = dropWhile isSpace (reverse (dropWhile isSpace (reverse (unwords args))))
+    in (cmd, trimmedArgs)
+
 
 instructionsText = [
     "",
     "Dostępne akcje to:",
     "start              -- Rozpocznij grę.",
-    "n                  -- Idź w kierunku północnym.",
-    "e                  -- Idź w kierunku wschodnim.",
-    "w                  -- Idź w kierunku zachodnim.",
-    "s                  -- Idź w kierunku południowym.",
-    "up                 -- Idź na górę.",
-    "down               -- Idź na dół.",
-    "take(id)           -- Podnieś przedmiot.",
+    "go n               -- Idź w kierunku północnym.",
+    "go e               -- Idź w kierunku wschodnim.",
+    "go w               -- Idź w kierunku zachodnim.",
+    "go s               -- Idź w kierunku południowym.",
+    "go up              -- Idź na górę.",
+    "go down            -- Idź na dół.",
+    "take <item_id>     -- Podnieś przedmiot.",
     "look               -- Rozejrzyj się.",
     "stats              -- Wyświetl swoje statystyki.",
     "items              -- Wyświetl swoje przedmioty.",
@@ -41,31 +47,38 @@ introductionText = [
 printIntroduction = printLines introductionText
 
 
+go :: String -> IO ()
+go direction
+    | direction `elem` ["n", "e", "w", "s", "up", "down"] = do
+        putStrLn $ "Idziesz w kierunku " ++ direction ++ ". [NIE ZAIMPLEMENTOWANO]"
+    | otherwise = do
+        putStrLn "Nieznany kierunek."
+
+
+takeItem :: String -> IO ()
+takeItem item
+    | null item = do
+        putStrLn "Nie podałeś ID przedmiotu do podniesienia."
+    | otherwise = do
+        putStrLn $ "Podnosisz przedmiot: " ++ item ++ ". [NIE ZAIMPLEMENTOWANO]"
+
+
 -- note that the game loop may take the game state as
 -- an argument, eg. gameLoop :: State -> IO ()
 gameLoop :: IO ()
 gameLoop = do
     cmd <- readCommand
-    case cmd of
-        "n" ->      do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
+    let (action, argument) = parseCommand cmd
+    case action of
+        "go" ->     do go argument
                        gameLoop
-        "e" ->      do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
+        "take" ->   do takeItem argument
                        gameLoop
-        "w" ->      do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
+        "look" ->   do printLines ["Rozglądasz się", "[NIE ZAIMPLEMENTOWANO]", ""]
                        gameLoop
-        "s" ->      do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
+        "stats" ->  do printLines ["Twoje statystyki:", "[NIE ZAIMPLEMENTOWANO]", ""]
                        gameLoop
-        "up" ->     do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "down" ->   do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "take" ->   do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "look" ->   do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "stats" ->  do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
-                       gameLoop
-        "items" ->  do printLines ["[NIE ZAIMPLEMENTOWANO]", ""]
+        "items" ->  do printLines ["Twoje przedmioty:", "[NIE ZAIMPLEMENTOWANO]", ""]
         "instructions" -> do printInstructions
                              gameLoop
         "quit" -> return ()
