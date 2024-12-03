@@ -65,6 +65,7 @@ go direction gameState paths
             then do
                 let newLocation = getNewLocation (currentLocation gameState) direction paths
                 putStrLn $ "Idziesz w kierunku " ++ direction ++ "."
+                putStrLn (describeLocation newLocation)
                 return gameState { currentLocation = newLocation }
             else do
                 putStrLn "Nie możesz tam iść."
