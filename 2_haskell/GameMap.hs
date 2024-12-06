@@ -1,7 +1,10 @@
 module GameMap where
 
-data Location = Location { floor :: Int, location :: String }
-  deriving (Show, Eq)
+import System.Random (randomRIO)
+import Data.List (find, intercalate)
+
+import Locations
+import ItemsNPCs
 
 reverseDirection :: String -> String
 reverseDirection "n" = "s"
@@ -16,107 +19,107 @@ type Path = (Location, String, Location)
 paths :: [Path]
 paths =
   [ --fisrt floor
-    (Location 1 "start", "e", Location 1 "1 b"),
-    (Location 1 "1 b", "e", Location 1 "1 c"),
-    (Location 1 "1 c", "s", Location 1 "2 c"),
-    (Location 1 "2 c", "w", Location 1 "2 b"),
+    (location1_1_a, "e", location1_1_b),
+    (location1_1_b, "e", location1_1_c),
+    (location1_1_c, "s", location1_2_c),
+    (location1_2_c, "w", location1_2_b),
 
-    (Location 1 "start", "s", Location 1 "2 a"),
-    (Location 1 "2 a", "s", Location 1 "3 a"),
-    (Location 1 "3 a", "e", Location 1 "3 b"),
-    (Location 1 "3 b", "s", Location 1 "4 b"),
+    (location1_1_a, "s", location1_2_a),
+    (location1_2_a, "s", location1_3_a),
+    (location1_3_a, "e", location1_3_b),
+    (location1_3_b, "s", location1_4_b),
 
-    (Location 1 "4 b", "e", Location 1 "4 c"),
-    (Location 1 "4 c", "n", Location 1 "3 c"),
-    (Location 1 "3 c", "e", Location 1 "3 d"),
+    (location1_4_b, "e", location1_4_c),
+    (location1_4_c, "n", location1_3_c),
+    (location1_3_c, "e", location1_3_d),
 
-    (Location 1 "4 b", "w", Location 1 "4 a"),
-    (Location 1 "4 a", "s", Location 1 "5 a"),
-    (Location 1 "5 a", "e", Location 1 "5 b"),
-    (Location 1 "5 b", "e", Location 1 "5 c"),
-    (Location 1 "5 c", "e", Location 1 "5 d"),
-    (Location 1 "5 d", "n", Location 1 "4 d"),
-    (Location 1 "4 d", "e", Location 1 "4 e"),
+    (location1_4_b, "w", location1_4_a),
+    (location1_4_a, "s", location1_5_a),
+    (location1_5_a, "e", location1_5_b),
+    (location1_5_b, "e", location1_5_c),
+    (location1_5_c, "e", location1_5_d),
+    (location1_5_d, "n", location1_4_d),
+    (location1_4_d, "e", location1_4_e),
 
-    (Location 1 "4 e", "s", Location 1 "5 e"),
-    (Location 1 "5 e", "e", Location 1 "5 f"),
+    (location1_4_e, "s", location1_5_e),
+    (location1_5_e, "e", location1_5_f),
 
-    (Location 1 "4 e", "n", Location 1 "3 e"),
+    (location1_4_e, "n", location1_3_e),
 
-    (Location 1 "3 e", "e", Location 1 "3 f"),
-    (Location 1 "3 f", "s", Location 1 "4 f"),
-    (Location 1 "4 f", "e", Location 1 "staircase 1"),
+    (location1_3_e, "e", location1_3_f),
+    (location1_3_f, "s", location1_4_f),
+    (location1_4_f, "e", location1_4_g),
 
-    (Location 1 "staircase 1", "up", Location 2 "staircase 2"),
+    (location1_4_g, "up", location2_1_a),
 
-    (Location 1 "3 e", "n", Location 1 "2 e"),
-    (Location 1 "2 e", "w", Location 1 "2 d"),
-    (Location 1 "2 d", "n", Location 1 "1 d"),
-    (Location 1 "1 d", "e", Location 1 "1 e"),
-    (Location 1 "1 e", "e", Location 1 "1 f"),
+    (location1_3_e, "n", location1_2_e),
+    (location1_2_e, "w", location1_2_d),
+    (location1_2_d, "n", location1_1_d),
+    (location1_1_d, "e", location1_1_e),
+    (location1_1_e, "e", location1_1_f),
 
-    (Location 1 "1 f", "s", Location 1 "2 f"),
-    (Location 1 "2 f", "e", Location 1 "2 g"),
-    (Location 1 "2 g", "s", Location 1 "3 g"),
-    (Location 1 "3 g", "e", Location 1 "3 h"),
-    (Location 1 "3 h", "n", Location 1 "2 h"),
+    (location1_1_f, "s", location1_2_f),
+    (location1_2_f, "e", location1_2_g),
+    (location1_2_g, "s", location1_3_g),
+    (location1_3_g, "e", location1_3_h),
+    (location1_3_h, "n", location1_2_h),
 
-    (Location 1 "1 f", "e", Location 1 "1 g"),
+    (location1_1_f, "e", location1_1_g),
 
-    (Location 1 "1 g", "s", Location 1 "2 g"),
+    (location1_1_g, "s", location1_2_g),
 
-    (Location 1 "1 g", "e", Location 1 "1 h"),
-    (Location 1 "1 h", "e", Location 1 "1 i"),
-    (Location 1 "1 i", "e", Location 1 "1 j"),
-    (Location 1 "1 j", "s", Location 1 "2 j"),
-    (Location 1 "2 j", "w", Location 1 "2 i"),
-    (Location 1 "2 i", "s", Location 1 "3 i"),
-    (Location 1 "3 i", "s", Location 1 "4 i"),
+    (location1_1_g, "e", location1_1_h),
+    (location1_1_h, "e", location1_1_i),
+    (location1_1_i, "e", location1_1_j),
+    (location1_1_j, "s", location1_2_j),
+    (location1_2_j, "w", location1_2_i),
+    (location1_2_i, "s", location1_3_i),
+    (location1_3_i, "s", location1_4_i),
 
-    (Location 1 "4 i", "e", Location 1 "4 j"),
-    (Location 1 "4 j", "n", Location 1 "3 j"),
+    (location1_4_i, "e", location1_4_j),
+    (location1_4_j, "n", location1_3_j),
 
-    (Location 1 "4 i", "w", Location 1 "4 h"),
-    (Location 1 "4 h", "s", Location 1 "5 h"),
+    (location1_4_i, "w", location1_4_h),
+    (location1_4_h, "s", location1_5_h),
 
-    (Location 1 "5 h", "w", Location 1 "5 g"),
+    (location1_5_h, "w", location1_5_g),
 
-    (Location 1 "5 h", "e", Location 1 "5 i"),
-    (Location 1 "5 i", "e", Location 1 "end"),
+    (location1_5_h, "e", location1_5_i),
+    (location1_5_i, "e", location1_5_j),
 
     --second floor
-    (Location 2 "staircase 2", "e", Location 2 "1 b"),
-    (Location 2 "1 b", "e", Location 2 "1 c"),
-    (Location 2 "1 c", "s", Location 2 "2 c"),
+    (location2_1_a, "e", location2_1_b),
+    (location2_1_b, "e", location2_1_c),
+    (location2_1_c, "s", location2_2_c),
 
-    (Location 2 "2 c", "w", Location 2 "2 b"),
-    (Location 2 "2 b", "s", Location 2 "3 b"),
-    (Location 2 "3 b", "s", Location 2 "4 b"),
+    (location2_2_c, "w", location2_2_b),
+    (location2_2_b, "s", location2_3_b),
+    (location2_3_b, "s", location2_4_b),
 
-    (Location 2 "4 b", "e", Location 2 "4 c"),
-    (Location 2 "4 c", "e", Location 2 "4 d"),
+    (location2_4_b, "e", location2_4_c),
+    (location2_4_c, "e", location2_4_d),
 
-    (Location 2 "4 b", "s", Location 2 "5 b"),
-    (Location 2 "5 b", "w", Location 2 "5 a"),
-    (Location 2 "5 a", "n", Location 2 "4 a"),
-    (Location 2 "4 a", "n", Location 2 "3 a"),
-    (Location 2 "3 a", "n", Location 2 "2 a"),
+    (location2_4_b, "s", location2_5_b),
+    (location2_5_b, "w", location2_5_a),
+    (location2_5_a, "n", location2_4_a),
+    (location2_4_a, "n", location2_3_a),
+    (location2_3_a, "n", location2_2_a),
 
-    (Location 2 "2 c", "s", Location 2 "3 c"),
-    (Location 2 "3 c", "e", Location 2 "3 d"),
+    (location2_2_c, "s", location2_3_c),
+    (location2_3_c, "e", location2_3_d),
 
-    (Location 2 "3 d", "n", Location 2 "2 d"),
-    (Location 2 "2 d", "n", Location 2 "1 d"),
+    (location2_3_d, "n", location2_2_d),
+    (location2_2_d, "n", location2_1_d),
 
-    (Location 2 "3 d", "e", Location 2 "3 e"),
+    (location2_3_d, "e", location2_3_e),
 
-    (Location 2 "3 e", "n", Location 2 "2 e"),
-    (Location 2 "2 e", "n", Location 2 "1 e"),
+    (location2_3_e, "n", location2_2_e),
+    (location2_2_e, "n", location2_1_e),
 
-    (Location 2 "3 e", "s", Location 2 "4 e"),
-    (Location 2 "4 e", "s", Location 2 "5 e"),
-    (Location 2 "5 e", "w", Location 2 "5 d"),
-    (Location 2 "5 d", "w", Location 2 "5 c")
+    (location2_3_e, "s", location2_4_e),
+    (location2_4_e, "s", location2_5_e),
+    (location2_5_e, "w", location2_5_d),
+    (location2_5_d, "w", location2_5_c)
   ]
 
 bidirectionalPaths :: [Path] -> [Path]
@@ -132,4 +135,50 @@ describeLocation (Location floor location)
     | location == "end" = "Jesteś na " ++ show floor ++ ". piętrze przy wyjściu."
     | otherwise = "Jesteś na " ++ show floor ++ ". piętrze, korytarz " ++ location
 
---TODO: add items and npcs
+type ItemsLocations = [(Item, Location)]
+
+initialItems :: ItemsLocations
+initialItems = [ (poor_notes, location1_3_d), (outdated_regulations, location1_2_b) ]
+
+randomSelect lst = do
+    idx <- randomRIO (0, length lst - 1)
+    let (before, x:after) = splitAt idx lst
+    return (x, before ++ after)
+
+addItemInRandomLocation :: Item -> [Location] -> ItemsLocations -> IO (ItemsLocations, [Location])
+addItemInRandomLocation item potentialLocations currentItems = do
+    (location, remainingLocations) <- randomSelect potentialLocations
+    let newItemLocation = (item, location)
+    return (currentItems ++ [newItemLocation], remainingLocations)
+
+type NPCLocations = [(NPC, Location)]
+
+initialNPCs = []
+
+addNPCInRandomLocation :: NPC -> [Location] -> NPCLocations -> IO (NPCLocations, [Location])
+addNPCInRandomLocation npc potentialLocations currentNPCs = do
+    (location, remainingLocations) <- randomSelect potentialLocations
+    let newNPCLocation = (npc, location)
+    return (currentNPCs ++ [newNPCLocation], remainingLocations)
+
+chooseRandomLocations :: ItemsLocations -> NPCLocations -> IO (ItemsLocations, NPCLocations)
+chooseRandomLocations currentItems currentNPCs = do
+    let potentialJackpotLocations = [location2_4_d, location2_2_a, location2_1_d, location2_1_e, location2_5_c]
+        potentialNPCLocations = [location1_3_e, location1_2_g, location1_3_j, location1_5_g]
+    (updatedNPCs1, remainingLocations1) <- addNPCInRandomLocation lecturer potentialNPCLocations currentNPCs
+    (updatedNPCs2, remainingLocations2) <- addNPCInRandomLocation vendingMachine remainingLocations1 updatedNPCs1
+    (updatedItems, remainingLocations3) <- addItemInRandomLocation jackpot potentialJackpotLocations currentItems
+    (updatedNPCs3, remainingLocations4) <- addNPCInRandomLocation dean remainingLocations3 updatedNPCs2
+    (updatedNPCs4, remainingLocations5) <- addNPCInRandomLocation dean remainingLocations4 updatedNPCs3
+    (updatedNPCs5, remainingLocations6) <- addNPCInRandomLocation dean remainingLocations5 updatedNPCs4
+    (updatedNPCs6, remainingLocations7) <- addNPCInRandomLocation dean remainingLocations6 updatedNPCs5
+    return (updatedItems, updatedNPCs6)
+
+addJanitor :: NPCLocations -> NPCLocations
+addJanitor currentNPCs = currentNPCs ++ [(janitor, location1_5_i)]
+
+encounterNPC :: Location -> NPCLocations -> String
+encounterNPC loc npcsMap = 
+    case find (\(_, npcLocation) -> npcLocation == loc) npcsMap of
+        Just (npc, _) -> "Spotykasz " ++ npcName npc ++ "."
+        Nothing -> ""
