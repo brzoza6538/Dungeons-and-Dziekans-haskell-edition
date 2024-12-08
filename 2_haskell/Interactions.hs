@@ -217,27 +217,34 @@ attackNPC gameState = do
         
     _ -> do 
         -- +/- 2 do ataku bazowego minus defense przeciwnika 
-        randOffset <- randomRIO ((0) :: Int, (4) :: Int) 
+        randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
         let
-            damageNPC = (herosAttack (stats gameState)) + (randOffset - 2) -  (defense npc)
+            damageNPC = (herosAttack (stats gameState)) + randOffset -  (defense npc)
             halfwayGameState = updateNPC gameState damageNPC
         putStrLn ("zadajesz " ++ show damageNPC ++ " obrazenia")
 
-        randOffset <- randomRIO ((0) :: Int, (4) :: Int) 
+        randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
         let
-            damageHero = (attack npc) + (randOffset - 2) -  (herosDefense (stats gameState))
+            damageHero = (attack npc) + randOffset -  (herosDefense (stats gameState))
             finalGameState = updateHero halfwayGameState damageHero
         putStrLn ( npcName npc ++ " zadaje ci " ++ show damageHero ++ " obrazen")
 
 
         if ((herosEnergy (stats gameState)) - damageHero < 0) then do
-            putStrLn "Koniec gry. Zostałeś pokonany"
-            let newGameState = gameState { running = False } 
-            return newGameState
+                putStrLn "Koniec gry. Zostałeś pokonany"
+                let endGameState = finalGameState { running = False } 
+                return endGameState
 
-        else if ((energy npc) - damageNPC < 0) then do
-            putStrLn ("I jak stał. " ++ npcName npc ++ " teraz już nie stoi")
-            return finalGameState 
+        else if ((energy npc) - damageNPC <= 0) then do
+            if npcName npc == npcName janitor then do 
+                putStrLn "Dozorca zostal pokonany, nic nie stoi ci na drodze do wyjścia. Ale nadal czujesz ogromny ciężar na sercu, wiesz że to jeszcze nie koniec"
+                putStrLn "Koniec gry"
+                let endGameState = finalGameState { running = False } 
+                return endGameState
+
+            else do
+                putStrLn ("I jak stał. " ++ npcName npc ++ " teraz już nie stoi")
+                return finalGameState 
 
         else do 
             putStrLn ("przeciwnikowi zostało " ++ show ((energy npc) - damageNPC) ++ " energii")

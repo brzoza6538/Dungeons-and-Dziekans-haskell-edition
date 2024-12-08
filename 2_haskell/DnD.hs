@@ -173,7 +173,7 @@ interactionsLoop gameState paths =
 
 
             "leave" -> do
-                if uncooperative npc then do 
+                if (uncooperative npc && npcName npc /= "Automat") then do 
                     putStrLn (npcName npc ++ " nie wydaje się chcieć cię przepuścić")
                     interactionsLoop gameState paths
                 else do
@@ -183,7 +183,7 @@ interactionsLoop gameState paths =
 
             "stats" -> do
                 printLines ["Twoje statystyki:", show (stats gameState)]
-                gameLoop gameState paths
+                interactionsLoop gameState paths
 
             "inventory" -> do
                 putStrLn (seeInventory gameState)
