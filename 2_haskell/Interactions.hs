@@ -6,6 +6,32 @@ import GameState
 import ItemsNPCs
 import GameMap
 
+updateStatsAfterTake :: GameState -> Item -> GameState
+updateStatsAfterTake gameState foundItem = 
+    case itemStat foundItem of
+        Just "Attack" -> 
+            let currAttack = herosAttack (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosAttack = currAttack + itemValue foundItem } }
+            in newGameState
+        
+        Just "Defense" -> 
+            let currDefense = herosDefense (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosDefense = currDefense + itemValue foundItem } }
+            in newGameState
+        
+        Just "Energy" -> 
+            let currEnergy = herosEnergy (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosEnergy = currEnergy + itemValue foundItem } }
+            in newGameState
+
+        Just "Charisma" -> 
+            let currCharisma = herosCharisma (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosCharisma = currCharisma + itemValue foundItem } }
+            in newGameState
+
+        _ -> gameState
+
+
 makeUncooperative :: GameState -> NPC-> GameState
 makeUncooperative gameState npc =
     let updatedNPC = npc { uncooperative = True }
@@ -21,9 +47,10 @@ itemFromMachine gameState = do
     let 
         item = vendingMachineInventory !! idx
         newInventory = item : (inventory gameState)
+        newGameState = updateStatsAfterTake gameState item 
 
     putStrLn ("otrzymujesz: " ++ (itemName item))
-    return (gameState { inventory = newInventory })
+    return (newGameState { inventory = newInventory })
 
 
 talkWithNPC :: GameState -> NPC -> IO GameState

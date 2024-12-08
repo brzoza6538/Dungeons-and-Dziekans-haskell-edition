@@ -18,3 +18,5 @@ readCommand = do
     putStr "> "
     xs <- getLine
     return xs
+
+

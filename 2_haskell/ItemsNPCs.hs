@@ -25,7 +25,7 @@ up_to_date_regulations = Item "Nowy regulamin" "Zbiór zapisów, którymi możes
 
 formal_wear = Item "Toga" "Modny dodatek. Ludzie będą traktować cię poważnie, nawet jeśli nie masz nic mądrego do powiedzenia (+1 charyzmy)" (Just "Charisma") 1
 
-energy_drink = Item "Energetyk" "Niezastąpiony w momentach kryzysowych. Daje energię, np.: by dokończyć noc przed oddaniem (prawie) każdy projekt" Nothing 0
+energy_drink = Item "Energetyk" "Niezastąpiony w momentach kryzysowych. Daje energię, np.: by dokończyć noc przed oddaniem (prawie) każdy projekt" (Just "Energy") 10
 
 
 
@@ -56,3 +56,4 @@ vendingMachineInventory =
     energy_drink,
     better_notes
   ]
+  

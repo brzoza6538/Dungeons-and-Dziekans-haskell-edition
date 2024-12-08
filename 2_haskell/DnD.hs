@@ -36,7 +36,7 @@ interactionInstructionsText = [
     "Dostępne akcje to:",
 
     "interact           -- porozmawiaj/użyj",
-    "attack             -- zaatakuj.",
+    "argue              -- 'zaatakuj'.",
     "leave              -- opuść walkę",
 
     "stats              -- Wyświetl swoje statystyki.",
@@ -87,6 +87,8 @@ look gameState = do
         then "Nie widzisz żadnych przedmiotów."
         else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items)
 
+
+
 takeItem :: String -> GameState -> (GameState, String)
 takeItem itemName gameState = 
     let foundItem = findItems itemName (currentLocation gameState) (itemsMap gameState)
@@ -95,7 +97,8 @@ takeItem itemName gameState =
             let newItemsMap = filter ((/= existingItem) . fst) (itemsMap gameState)
                 newInventory = existingItem : inventory gameState
                 message = "Podnosisz przedmiot: " ++ show existingItem
-            in (gameState { itemsMap = newItemsMap, inventory = newInventory }, message)
+                newGameState = updateStatsAfterTake gameState existingItem
+            in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
         Nothing -> 
             (gameState, "Nie ma takiego przedmiotu w tej lokalizacji.")
 
@@ -104,7 +107,48 @@ seeInventory gameState
     | null (inventory gameState) = "Nie masz żadnych przedmiotów."
     | otherwise = "Twoje przedmioty:\n" ++ intercalate "\n" (map show (inventory gameState))
 
+updateStatsAfterLeave :: GameState -> Item -> GameState
+updateStatsAfterLeave gameState foundItem = 
+    case itemStat foundItem of
+        Just "Attack" -> 
+            let currAttack = herosAttack (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosAttack = currAttack - itemValue foundItem } }
+            in newGameState
+        
+        Just "Defense" -> 
+            let currDefense = herosDefense (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosDefense = currDefense - itemValue foundItem } }
+            in newGameState
+        
+        Just "Energy" -> 
+            let currEnergy = herosEnergy (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosEnergy = currEnergy - itemValue foundItem } }
+            in newGameState
 
+        Just "Charisma" -> 
+            let currCharisma = herosCharisma (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosCharisma = currCharisma - itemValue foundItem } }
+            in newGameState
+
+        _ -> gameState
+
+findItemInInventory :: String -> [Item] -> Maybe Item
+findItemInInventory name items = find (\item -> itemName item == name) items
+
+leaveItem :: String -> GameState -> (GameState, String)
+leaveItem itemName gameState =
+    let foundItem = findItemInInventory itemName (inventory gameState)
+
+    in case foundItem of
+        Just existingItem -> 
+            let newInventory = filter (/= existingItem) (inventory gameState)
+                newItemsMap = (existingItem, currentLocation gameState) : itemsMap gameState
+                newGameState = updateStatsAfterLeave gameState existingItem
+                message = "Zostawiasz przedmiot: " ++ show existingItem
+            in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
+
+        Nothing -> 
+            (gameState, "Nie masz takiego przedmiotu w ekwipunku.")
 
 interactionsLoop :: GameState -> [Path] -> IO ()
 interactionsLoop gameState paths =
@@ -113,21 +157,7 @@ interactionsLoop gameState paths =
 
         cmd <- readCommand
         let (action, argument) = parseCommand cmd
-        -- printGameState gameState
-
         case action of
-            --interact
-            --attack
-            --leave
-
-        --  "take" -> do
-        --      let (newGameState, message) = takeItem argument gameState
-        --      putStrLn message
-        --      gameLoop newGameState paths
-
-        --  "interact" -> do 
-        --      let (newGameState, message) = Interact 
-
             "interact" -> do
                 if uncooperative npc then do 
                     putStrLn "to się chyba nie uda"
@@ -136,7 +166,7 @@ interactionsLoop gameState paths =
                     newGameState <- talkWithNPC gameState npc
                     interactionsLoop newGameState paths
 
-            "attack" -> do
+            "argue" -> do
                 newGameState <- attackNPC gameState
                 gameLoop newGameState paths
 
@@ -191,6 +221,12 @@ gameLoop gameState paths = do
                 let (newGameState, message) = takeItem argument gameState
                 putStrLn message
                 gameLoop newGameState paths
+            
+            "throwout" -> do
+                let (newGameState, message) = leaveItem argument gameState
+                putStrLn message
+                gameLoop newGameState paths
+
             "look" -> do
                 putStrLn (look gameState)
                 gameLoop gameState paths
