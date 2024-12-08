@@ -97,7 +97,7 @@ talkWithNPC gameState npc =
             return gameState
         _ -> do 
             (newGameState, message) <- itemFromMachine gameState
-            printLines ["Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi sugestiami, podając ci coś innego.", message]
+            printLines ["Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi instrukcjami, podając ci coś innego.", message]
 
             return (makeUncooperative newGameState npc)
   
