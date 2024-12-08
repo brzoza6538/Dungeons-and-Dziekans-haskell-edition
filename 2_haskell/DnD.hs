@@ -80,13 +80,22 @@ findItems :: String -> Location -> ItemsLocations -> Maybe Item
 findItems name loc itemsMap = 
     fst <$> find (\(item, location) -> itemName item == name && location == loc) itemsMap
 
+availableDirections :: Location -> GameState -> [String]
+availableDirections currentLoc gameState =
+    [direction | (from, direction, _) <- bidirectionalPaths paths, from == currentLoc]
+
 look :: GameState -> String
-look gameState = do
-    let loc = currentLocation gameState
+look gameState =
+    let
+        loc = currentLocation gameState
         items = [item | (item, location) <- itemsMap gameState, location == loc]
-    if null items
-        then "Nie widzisz żadnych przedmiotów."
-        else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items)
+        directionsDescription = "Możesz iść w kierunki: " ++ intercalate ", " (availableDirections loc gameState)
+        locationDescription = describeLocation loc
+        itemDescription = if null items
+            then "Nie widzisz żadnych przedmiotów."
+            else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items)
+    in
+        "\n" ++ locationDescription ++ "\n" ++ directionsDescription ++ "\n" ++ itemDescription
 
 
 
@@ -273,4 +282,6 @@ main = do
     printInstructions
     (updatedItems, updatedNPCs) <- chooseRandomLocations initialItems initialNPCs
     stats <- createPlayer
-    gameLoop (GameState location1_1_a [] updatedItems updatedNPCs stats True) (bidirectionalPaths paths)
+    let initialGameState = GameState location1_1_a [] updatedItems updatedNPCs stats True
+    printLines ["", look initialGameState]
+    gameLoop initialGameState (bidirectionalPaths paths)
