@@ -153,7 +153,7 @@ talkWithNPC gameState npc =
 
         "3" -> do
             idx <- randomRIO (0 :: Int, 1 :: Int)
-            if (idx == 1 && herosCharisma (stats gameState) > 2) then do
+            if (idx == 1 && herosCharisma (stats gameState) > 1) then do
                 putStrLn "Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Po chwili namyslu postanawia ci pomóc. Możesz uznać swój dług za spłacony"
                 putStrLn "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że masz przyszłość"
                 let newGameState = gameState { running = False } 
