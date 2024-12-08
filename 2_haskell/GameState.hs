@@ -20,4 +20,5 @@ data GameState = GameState
     , itemsMap :: ItemsLocations
     , npcsMap :: NPCLocations
     , stats :: Stats
+    , running :: Bool
     }

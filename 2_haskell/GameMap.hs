@@ -166,7 +166,7 @@ chooseRandomLocations :: ItemsLocations -> NPCLocations -> IO (ItemsLocations, N
 chooseRandomLocations currentItems currentNPCs = do
     let 
         potentialJackpotLocations = [location2_4_d, location2_2_a, location2_1_d, location2_1_e, location2_5_c]
-        potentialNPCLocations = [location1_3_e, location1_2_g, location1_3_j, location1_5_g]
+        potentialNPCLocations = [location1_2_a, location1_3_a]--location1_3_e, location1_2_g, location1_3_j, location1_5_g]
    
     (updatedNPCs1, remainingLocations1) <- addNPCInRandomLocation lecturer potentialNPCLocations currentNPCs
     (updatedNPCs2, remainingLocations2) <- addNPCInRandomLocation vendingMachine remainingLocations1 updatedNPCs1

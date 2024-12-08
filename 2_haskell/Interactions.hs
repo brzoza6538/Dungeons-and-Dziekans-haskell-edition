@@ -2,7 +2,6 @@ module Interactions where
 
 import IOFunctions
 import System.Random (randomRIO)
-import System.Exit (exitSuccess)
 import GameState
 import ItemsNPCs
 import GameMap
@@ -97,7 +96,8 @@ talkWithNPC gameState npc =
             if (idx == 1 && herosCharisma (stats gameState) > 0) then do
                 putStrLn "Odrobina uprzejmości i dozorca od razu się do ciebie otwiera. Słuchasz jego historii jak sam był kiedyś studentem, ale warunki zniszczyły mu życie. Po rozmowie postanawia się cie wypuścić. Udało ci się uciec, ale nadal nie rozwiązałeś swoich problemów"
                 putStrLn "Koniec gry, przeżyłeś dzisiejszy dzień, ale jest to życie pełne strachu i niepewności"
-                exitSuccess
+                let newGameState = gameState { running = False } 
+                return newGameState
 
             else do  
                 putStrLn "Jak się okazuje dozorca nie ma najmniejszej ochoty z tobą rozmawiać a twoje natręctwo tylko go zirytowało"
@@ -129,7 +129,8 @@ talkWithNPC gameState npc =
             if (idx == 1 && herosCharisma (stats gameState) > 2) then do
                 putStrLn "Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Po chwili namyslu postanawia ci pomóc. Możesz uznać swój dług za spłacony"
                 putStrLn "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że masz przyszłość"
-                exitSuccess
+                let newGameState = gameState { running = False } 
+                return newGameState
 
             else do  
                 putStrLn "Dziekan wydaje się słuchać ciebie z uwagą, jednak w połowie twojej historii o tragedii kiedy twój trzeci pies zjadł również twój laptop, podczas pogrzebu twojej babci, zaczyna się z ciebie śmiać. Nie rozwiążesz tego rozmową"
@@ -142,11 +143,12 @@ talkWithNPC gameState npc =
             if strzalCheck then do
                 putStrLn "Dziekan stoi chwilę oniemiały. był pewny że to tylko legenda. Jednak wie dobrze że jest to coś co musi uhonorować"
                 putStrLn "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że masz przyszłość"
-                exitSuccess
+                let newGameState = gameState { running = False } 
+                return newGameState
+                
             else do
                 putStrLn "Dziekan śmieje się z ciebie i pyta czy to też pies ci zjadł"
-
-            return (makeUncooperative gameState npc)
+                return (makeUncooperative gameState npc)
 
 
         _ -> do  
@@ -183,7 +185,8 @@ attackNPC gameState = do
         putStrLn "Maszyna wydaje się buczyć 'Ach, wreszcie godny oponent'"
         putStrLn "Po czym wybucha drastycznie ciebie raniąc. Sfrustrowany dziekan podziwia twoje poświęcenie oglądac jak twoje nieprzytomne ciało jest wywożone z wydziału ambulansem bez uiszczenia opłaty"
         putStrLn "Koniec gry. Nie będziesz się musiał martwić warunkami przez bardzo długi czas"
-        exitSuccess
+        let newGameState = gameState { running = False } 
+        return newGameState
         
     _ -> do 
         -- +/- 2 do ataku bazowego minus defense przeciwnika 
@@ -202,7 +205,8 @@ attackNPC gameState = do
 
         if ((herosEnergy (stats gameState)) - damageHero < 0) then do
             putStrLn "Koniec gry. Zostałeś pokonany"
-            exitSuccess
+            let newGameState = gameState { running = False } 
+            return newGameState
 
         else if ((energy npc) - damageNPC < 0) then do
             putStrLn ("I jak stał. " ++ npcName npc ++ " teraz już nie stoi")
