@@ -2,40 +2,44 @@
 -- Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska
 import Data.Char (isSpace)
 import Data.List (find, intercalate)
+import System.Random (randomRIO)
 
 import GameMap
 import Locations
 import ItemsNPCs
-
-data GameState = GameState { currentLocation :: Location, inventory :: [Item], itemsMap :: ItemsLocations, npcsMap :: NPCLocations }
-
-printLines :: [String] -> IO ()
-printLines xs = putStr (unlines xs)
-
-readCommand :: IO String
-readCommand = do
-    putStr "> "
-    xs <- getLine
-    return xs
-
-parseCommand :: String -> (String, String)
-parseCommand input =
-    let (cmd:args) = words input ++ [""]
-        trimmedArgs = dropWhile isSpace (reverse (dropWhile isSpace (reverse (unwords args))))
-    in (cmd, trimmedArgs)
+import IOFunctions
+import GameState
+import Interactions
 
 instructionsText = [
     "",
     "Dostępne akcje to:",
-    "start              -- Rozpocznij grę.",
-    "go n               -- Idź w kierunku północnym.",
-    "go e               -- Idź w kierunku wschodnim.",
-    "go w               -- Idź w kierunku zachodnim.",
-    "go s               -- Idź w kierunku południowym.",
-    "go up              -- Idź na górę.",
-    "go down            -- Idź na dół.",
-    "take <item_name>   -- Podnieś przedmiot.",
-    "look               -- Rozejrzyj się.",
+    "start                  -- Rozpocznij grę.",
+    "go n                   -- Idź w kierunku północnym.",
+    "go e                   -- Idź w kierunku wschodnim.",
+    "go w                   -- Idź w kierunku zachodnim.",
+    "go s                   -- Idź w kierunku południowym.",
+    "go up                  -- Idź na górę.",
+    "go down                -- Idź na dół.",
+    "take <item_name>       -- Podnieś przedmiot.",
+    "throwout <item_name>   -- odrzuć przedmiot.",
+    "look                   -- Rozejrzyj się.",
+    "stats                  -- Wyświetl swoje statystyki.",
+    "inventory              -- Wyświetl swoje przedmioty.",
+    "instructions           -- Wyświetl instrukcje ponownie.",
+    "quit                   -- Zakończ rozgrywkę i wyjdź.",
+    "" 
+    ]
+
+
+interactionInstructionsText = [
+    "",
+    "Dostępne akcje to:",
+
+    "interact           -- porozmawiaj/użyj",
+    "argue              -- 'zaatakuj'.",
+    "leave              -- opuść walkę",
+
     "stats              -- Wyświetl swoje statystyki.",
     "inventory          -- Wyświetl swoje przedmioty.",
     "instructions       -- Wyświetl instrukcje ponownie.",
@@ -64,12 +68,13 @@ go :: String -> GameState -> [Path] -> (GameState, String)
 go direction gameState paths
     | direction `elem` ["n", "e", "w", "s", "up", "down"] = 
         if pathExists (currentLocation gameState) direction paths
-            then let newLocation = getNewLocation (currentLocation gameState) direction paths
+            then let 
+                     newLocation = getNewLocation (currentLocation gameState) direction paths
                      npcMessage = encounterNPC newLocation (npcsMap gameState)
                      message = "Idziesz w kierunku " ++ direction ++ ".\n" ++ describeLocation newLocation ++ "\n" ++ npcMessage
-                 in (gameState { currentLocation = newLocation }, message)
+                in (gameState { currentLocation = newLocation }, message)
             else (gameState, "Nie możesz tam iść.")
-    | otherwise = (gameState, "Nie możesz tam iść.")
+    | otherwise = (gameState, "podany kierunek nie istnieje")
 
 findItems :: String -> Location -> ItemsLocations -> Maybe Item
 findItems name loc itemsMap = 
@@ -83,6 +88,8 @@ look gameState = do
         then "Nie widzisz żadnych przedmiotów."
         else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items)
 
+
+
 takeItem :: String -> GameState -> (GameState, String)
 takeItem itemName gameState = 
     let foundItem = findItems itemName (currentLocation gameState) (itemsMap gameState)
@@ -91,7 +98,8 @@ takeItem itemName gameState =
             let newItemsMap = filter ((/= existingItem) . fst) (itemsMap gameState)
                 newInventory = existingItem : inventory gameState
                 message = "Podnosisz przedmiot: " ++ show existingItem
-            in (gameState { itemsMap = newItemsMap, inventory = newInventory }, message)
+                newGameState = updateStatsAfterTake gameState existingItem
+            in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
         Nothing -> 
             (gameState, "Nie ma takiego przedmiotu w tej lokalizacji.")
 
@@ -100,36 +108,145 @@ seeInventory gameState
     | null (inventory gameState) = "Nie masz żadnych przedmiotów."
     | otherwise = "Twoje przedmioty:\n" ++ intercalate "\n" (map show (inventory gameState))
 
+updateStatsAfterLeave :: GameState -> Item -> GameState
+updateStatsAfterLeave gameState foundItem = 
+    case itemStat foundItem of
+        Just "Attack" -> 
+            let currAttack = herosAttack (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosAttack = currAttack - itemValue foundItem } }
+            in newGameState
+        
+        Just "Defense" -> 
+            let currDefense = herosDefense (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosDefense = currDefense - itemValue foundItem } }
+            in newGameState
+        
+        Just "Energy" -> 
+            let currEnergy = herosEnergy (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosEnergy = currEnergy - itemValue foundItem } }
+            in newGameState
+
+        Just "Charisma" -> 
+            let currCharisma = herosCharisma (stats gameState)
+                newGameState = gameState { stats = (stats gameState) { herosCharisma = currCharisma - itemValue foundItem } }
+            in newGameState
+
+        _ -> gameState
+
+findItemInInventory :: String -> [Item] -> Maybe Item
+findItemInInventory name items = find (\item -> itemName item == name) items
+
+leaveItem :: String -> GameState -> (GameState, String)
+leaveItem itemName gameState =
+    let foundItem = findItemInInventory itemName (inventory gameState)
+
+    in case foundItem of
+        Just existingItem -> 
+            let newInventory = filter (/= existingItem) (inventory gameState)
+                newItemsMap = (existingItem, currentLocation gameState) : itemsMap gameState
+                newGameState = updateStatsAfterLeave gameState existingItem
+                message = "Zostawiasz przedmiot: " ++ show existingItem
+            in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
+
+        Nothing -> 
+            (gameState, "Nie masz takiego przedmiotu w ekwipunku.")
+
+interactionsLoop :: GameState -> [Path] -> IO ()
+interactionsLoop gameState paths =
+    if (running gameState) then do 
+        let npc = fst $ head $ filter (\(_, npcLocation) -> npcLocation == currentLocation gameState) (npcsMap gameState)
+
+        cmd <- readCommand
+        let (action, argument) = parseCommand cmd
+        case action of
+            "interact" -> do
+                if uncooperative npc then do 
+                    putStrLn "to się chyba nie uda"
+                    interactionsLoop gameState paths
+                else do
+                    newGameState <- talkWithNPC gameState npc
+                    interactionsLoop newGameState paths
+
+            "argue" -> do
+                newGameState <- attackNPC gameState
+                gameLoop newGameState paths
+
+
+            "leave" -> do
+                if (uncooperative npc && npcName npc /= "Automat") then do 
+                    putStrLn (npcName npc ++ " nie wydaje się chcieć cię przepuścić")
+                    interactionsLoop gameState paths
+                else do
+                    putStrLn ("omijasz " ++ npcName npc ++ " i idziesz dalej")
+                    gameLoop gameState paths
+
+
+            "stats" -> do
+                printLines ["Twoje statystyki:", show (stats gameState)]
+                interactionsLoop gameState paths
+
+            "inventory" -> do
+                putStrLn (seeInventory gameState)
+                interactionsLoop gameState paths
+            
+
+            "instructions" -> do
+                printLines interactionInstructionsText
+                interactionsLoop gameState paths
+
+            "quit" -> do 
+                return ()
+
+            _ -> do
+                printLines ["nieadekwatna komenda. Sprawdź instrukcję używając 'instructions'", ""]
+                interactionsLoop gameState paths
+    else do 
+        return ()
+
 gameLoop :: GameState -> [Path] -> IO ()
 gameLoop gameState paths = do
-    cmd <- readCommand
-    let (action, argument) = parseCommand cmd
-    -- printGameState gameState
-    case action of
-        "go" -> do
-            let (newGameState, message) = go argument gameState paths
-            putStrLn message
-            gameLoop newGameState paths
-        "take" -> do
-            let (newGameState, message) = takeItem argument gameState
-            putStrLn message
-            gameLoop newGameState paths
-        "look" -> do
-            putStrLn (look gameState)
-            gameLoop gameState paths
-        "stats" -> do
-            printLines ["Twoje statystyki:", "[NIE ZAIMPLEMENTOWANO]", ""]
-            gameLoop gameState paths
-        "inventory" -> do
-            putStrLn (seeInventory gameState)
-            gameLoop gameState paths
-        "instructions" -> do
-            printInstructions
-            gameLoop gameState paths
-        "quit" -> return ()
-        _ -> do
-            printLines ["Nieznana komenda.", ""]
-            gameLoop gameState paths
+    if (running gameState) then do 
+
+        cmd <- readCommand
+        let (action, argument) = parseCommand cmd
+        -- printGameState gameState
+        case action of
+            "go" -> do
+                let (newGameState, message) = go argument gameState paths
+                putStrLn message
+                if checkForNPC (currentLocation newGameState) (npcsMap newGameState) then 
+                    interactionsLoop newGameState paths
+                else 
+                    gameLoop newGameState paths
+            "take" -> do
+                let (newGameState, message) = takeItem argument gameState
+                putStrLn message
+                gameLoop newGameState paths
+            
+            "throwout" -> do
+                let (newGameState, message) = leaveItem argument gameState
+                putStrLn message
+                gameLoop newGameState paths
+
+            "look" -> do
+                putStrLn (look gameState)
+                gameLoop gameState paths
+            "stats" -> do
+                printLines ["Twoje statystyki:", show (stats gameState)]
+                gameLoop gameState paths
+            "inventory" -> do
+                putStrLn (seeInventory gameState)
+                gameLoop gameState paths
+            "instructions" -> do
+                printInstructions
+                gameLoop gameState paths
+            "quit" -> return ()
+            _ -> do
+                printLines ["Nieznana komenda.", ""]
+                gameLoop gameState paths
+    else do 
+        return ()
+
 
 printGameState :: GameState -> IO ()
 printGameState gameState = do
@@ -138,9 +255,22 @@ printGameState gameState = do
     putStrLn "\nNPCs:"
     mapM_ (putStrLn . show) (npcsMap gameState)
 
+
+createPlayer :: IO Stats
+createPlayer = do
+    charisma <- randomRIO (0 :: Int, 1 :: Int)
+    attack <- randomRIO (3 :: Int, 8 :: Int)
+    defense <- randomRIO (0 :: Int, 5 :: Int)
+    energy <- randomRIO (15 :: Int, 25 :: Int)
+
+    let stats = Stats energy attack defense charisma
+    return stats
+
+
 main :: IO ()
 main = do
     printIntroduction
     printInstructions
     (updatedItems, updatedNPCs) <- chooseRandomLocations initialItems initialNPCs
-    gameLoop (GameState location1_1_a [] updatedItems updatedNPCs) (bidirectionalPaths paths)
+    stats <- createPlayer
+    gameLoop (GameState location1_1_a [] updatedItems updatedNPCs stats True) (bidirectionalPaths paths)

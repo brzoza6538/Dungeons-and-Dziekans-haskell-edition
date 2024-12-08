@@ -1,5 +1,6 @@
 module Locations where
 
+
 data Location = Location { floor :: Int, location :: String}
   deriving (Show, Eq)
 

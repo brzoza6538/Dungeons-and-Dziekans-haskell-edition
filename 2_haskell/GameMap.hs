@@ -5,6 +5,7 @@ import Data.List (find, intercalate)
 
 import Locations
 import ItemsNPCs
+import IOFunctions
 
 reverseDirection :: String -> String
 reverseDirection "n" = "s"
@@ -18,7 +19,7 @@ type Path = (Location, String, Location)
 
 paths :: [Path]
 paths =
-  [ --fisrt floor
+  [ --first floor
     (location1_1_a, "e", location1_1_b),
     (location1_1_b, "e", location1_1_c),
     (location1_1_c, "s", location1_2_c),
@@ -140,9 +141,9 @@ type ItemsLocations = [(Item, Location)]
 initialItems :: ItemsLocations
 initialItems = [ (poor_notes, location1_3_d), (outdated_regulations, location1_2_b) ]
 
-randomSelect lst = do
-    idx <- randomRIO (0, length lst - 1)
-    let (before, x:after) = splitAt idx lst
+randomSelect list = do
+    idx <- randomRIO (0, length list - 1)
+    let (before, x:after) = splitAt idx list
     return (x, before ++ after)
 
 addItemInRandomLocation :: Item -> [Location] -> ItemsLocations -> IO (ItemsLocations, [Location])
@@ -163,8 +164,10 @@ addNPCInRandomLocation npc potentialLocations currentNPCs = do
 
 chooseRandomLocations :: ItemsLocations -> NPCLocations -> IO (ItemsLocations, NPCLocations)
 chooseRandomLocations currentItems currentNPCs = do
-    let potentialJackpotLocations = [location2_4_d, location2_2_a, location2_1_d, location2_1_e, location2_5_c]
+    let 
+        potentialJackpotLocations = [location2_4_d, location2_2_a, location2_1_d, location2_1_e, location2_5_c]
         potentialNPCLocations = [location1_3_e, location1_2_g, location1_3_j, location1_5_g]
+   
     (updatedNPCs1, remainingLocations1) <- addNPCInRandomLocation lecturer potentialNPCLocations currentNPCs
     (updatedNPCs2, remainingLocations2) <- addNPCInRandomLocation vendingMachine remainingLocations1 updatedNPCs1
     (updatedItems, remainingLocations3) <- addItemInRandomLocation jackpot potentialJackpotLocations currentItems
@@ -180,5 +183,10 @@ addJanitor currentNPCs = currentNPCs ++ [(janitor, location1_5_i)]
 encounterNPC :: Location -> NPCLocations -> String
 encounterNPC loc npcsMap = 
     case find (\(_, npcLocation) -> npcLocation == loc) npcsMap of
-        Just (npc, _) -> "Spotykasz " ++ npcName npc ++ "."
+        Just (npc, _) -> 
+            "Spotykasz " ++ npcName npc ++ "."
         Nothing -> ""
+
+
+checkForNPC :: Location -> NPCLocations -> Bool
+checkForNPC loc npcsMap = any (\(_, npcLocation) -> npcLocation == loc) npcsMap
