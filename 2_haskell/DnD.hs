@@ -22,7 +22,7 @@ instructionsText = [
     "go up                  -- Idź na górę.",
     "go down                -- Idź na dół.",
     "take <item_name>       -- Podnieś przedmiot.",
-    "throwout <item_name>   -- odrzuć przedmiot.",
+    "drop <item_name>   -- Upuść przedmiot.",
     "look                   -- Rozejrzyj się.",
     "stats                  -- Wyświetl swoje statystyki.",
     "inventory              -- Wyświetl swoje przedmioty.",
@@ -70,8 +70,7 @@ go direction gameState paths
         if pathExists (currentLocation gameState) direction paths
             then let 
                      newLocation = getNewLocation (currentLocation gameState) direction paths
-                     npcMessage = encounterNPC newLocation (npcsMap gameState)
-                     message = "Idziesz w kierunku " ++ direction ++ ".\n" ++ describeLocation newLocation ++ "\n" ++ npcMessage
+                     message = "Idziesz w kierunku " ++ direction ++ "."
                 in (gameState { currentLocation = newLocation }, message)
             else (gameState, "Nie możesz tam iść.")
     | otherwise = (gameState, "podany kierunek nie istnieje")
@@ -89,11 +88,11 @@ look gameState =
     let
         loc = currentLocation gameState
         items = [item | (item, location) <- itemsMap gameState, location == loc]
-        directionsDescription = "Możesz iść w kierunki: " ++ intercalate ", " (availableDirections loc gameState)
+        directionsDescription = "Dostępne kierunki: " ++ intercalate ", " (availableDirections loc gameState)
         locationDescription = describeLocation loc
         itemDescription = if null items
-            then "Nie widzisz żadnych przedmiotów."
-            else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items)
+            then ""
+            else "Widzisz następujące przedmioty:\n" ++ intercalate "\n" (map show items) ++ "\n"
     in
         "\n" ++ locationDescription ++ "\n" ++ directionsDescription ++ "\n" ++ itemDescription
 
@@ -106,16 +105,16 @@ takeItem itemName gameState =
         Just existingItem -> 
             let newItemsMap = filter ((/= existingItem) . fst) (itemsMap gameState)
                 newInventory = existingItem : inventory gameState
-                message = "Podnosisz przedmiot: " ++ show existingItem
+                message = "Podnosisz przedmiot: " ++ show existingItem ++ "\n"
                 newGameState = updateStatsAfterTake gameState existingItem
             in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
         Nothing -> 
-            (gameState, "Nie ma takiego przedmiotu w tej lokalizacji.")
+            (gameState, "Nie ma takiego przedmiotu w tej lokalizacji.\n")
 
 seeInventory :: GameState -> String
 seeInventory gameState
-    | null (inventory gameState) = "Nie masz żadnych przedmiotów."
-    | otherwise = "Twoje przedmioty:\n" ++ intercalate "\n" (map show (inventory gameState))
+    | null (inventory gameState) = "Nie masz żadnych przedmiotów.\n"
+    | otherwise = "Twoje przedmioty:\n" ++ intercalate "\n" (map show (inventory gameState)) ++ "\n"
 
 updateStatsAfterLeave :: GameState -> Item -> GameState
 updateStatsAfterLeave gameState foundItem = 
@@ -154,11 +153,11 @@ leaveItem itemName gameState =
             let newInventory = filter (/= existingItem) (inventory gameState)
                 newItemsMap = (existingItem, currentLocation gameState) : itemsMap gameState
                 newGameState = updateStatsAfterLeave gameState existingItem
-                message = "Zostawiasz przedmiot: " ++ show existingItem
+                message = "Zostawiasz przedmiot: " ++ show existingItem ++ "\n"
             in (newGameState { itemsMap = newItemsMap, inventory = newInventory }, message)
 
         Nothing -> 
-            (gameState, "Nie masz takiego przedmiotu w ekwipunku.")
+            (gameState, "Nie masz takiego przedmiotu w ekwipunku.\n")
 
 formatStats :: Stats -> String
 formatStats stats = "\nEnergia - " ++ show (herosEnergy stats) ++
@@ -228,8 +227,10 @@ gameLoop gameState paths = do
         case action of
             "go" -> do
                 let (newGameState, message) = go argument gameState paths
-                printLines [message]
-                if checkForNPC (currentLocation newGameState) (npcsMap newGameState) then 
+                printLines [message, look newGameState]
+                if checkForNPC (currentLocation newGameState) (npcsMap newGameState) then do
+                    printLines [encounterNPC (currentLocation newGameState) (npcsMap newGameState)]
+                    printLines interactionInstructionsText
                     interactionsLoop newGameState paths
                 else 
                     gameLoop newGameState paths
@@ -238,7 +239,7 @@ gameLoop gameState paths = do
                 printLines [message]
                 gameLoop newGameState paths
             
-            "throwout" -> do
+            "drop" -> do
                 let (newGameState, message) = leaveItem argument gameState
                 printLines [message]
                 gameLoop newGameState paths
