@@ -160,6 +160,12 @@ leaveItem itemName gameState =
         Nothing -> 
             (gameState, "Nie masz takiego przedmiotu w ekwipunku.")
 
+formatStats :: Stats -> String
+formatStats stats = "\nEnergia - " ++ show (herosEnergy stats) ++
+        "\nAtak - " ++ show (herosAttack stats) ++ 
+        "\nObrona - " ++ show (herosDefense stats) ++ 
+        "\nCharyzma - " ++ show (herosCharisma stats) ++ "\n"
+
 interactionsLoop :: GameState -> [Path] -> IO ()
 interactionsLoop gameState paths =
     if (running gameState) then do 
@@ -241,7 +247,7 @@ gameLoop gameState paths = do
                 printLines [look (gameState)]
                 gameLoop gameState paths
             "stats" -> do
-                printLines ["Twoje statystyki:", show (stats gameState)]
+                printLines ["Twoje statystyki:", formatStats (stats gameState)]
                 gameLoop gameState paths
             "inventory" -> do
                 printLines [seeInventory (gameState)]
