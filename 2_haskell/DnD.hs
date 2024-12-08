@@ -161,7 +161,7 @@ interactionsLoop gameState paths =
         case action of
             "interact" -> do
                 if uncooperative npc then do 
-                    putStrLn "to się chyba nie uda"
+                    printLines ["To się chyba nie uda..."]
                     interactionsLoop gameState paths
                 else do
                     newGameState <- talkWithNPC gameState npc
@@ -174,10 +174,10 @@ interactionsLoop gameState paths =
 
             "leave" -> do
                 if (uncooperative npc && npcName npc /= "Automat") then do 
-                    putStrLn (npcName npc ++ " nie wydaje się chcieć cię przepuścić")
+                    printLines [npcName npc ++ " nie wydaje się chcieć cię przepuścić"]
                     interactionsLoop gameState paths
                 else do
-                    putStrLn ("omijasz " ++ npcName npc ++ " i idziesz dalej")
+                    printLines ["Omijasz " ++ npcName npc ++ " i idziesz dalej"]
                     gameLoop gameState paths
 
 
@@ -186,7 +186,7 @@ interactionsLoop gameState paths =
                 interactionsLoop gameState paths
 
             "inventory" -> do
-                putStrLn (seeInventory gameState)
+                printLines [seeInventory (gameState)]
                 interactionsLoop gameState paths
             
 
@@ -198,7 +198,7 @@ interactionsLoop gameState paths =
                 return ()
 
             _ -> do
-                printLines ["nieadekwatna komenda. Sprawdź instrukcję używając 'instructions'", ""]
+                printLines ["Nieznana komenda. Wyświetl instrukcje używając 'instructions'.", ""]
                 interactionsLoop gameState paths
     else do 
         return ()
@@ -213,36 +213,36 @@ gameLoop gameState paths = do
         case action of
             "go" -> do
                 let (newGameState, message) = go argument gameState paths
-                putStrLn message
+                printLines [message]
                 if checkForNPC (currentLocation newGameState) (npcsMap newGameState) then 
                     interactionsLoop newGameState paths
                 else 
                     gameLoop newGameState paths
             "take" -> do
                 let (newGameState, message) = takeItem argument gameState
-                putStrLn message
+                printLines [message]
                 gameLoop newGameState paths
             
             "throwout" -> do
                 let (newGameState, message) = leaveItem argument gameState
-                putStrLn message
+                printLines [message]
                 gameLoop newGameState paths
 
             "look" -> do
-                putStrLn (look gameState)
+                printLines [look (gameState)]
                 gameLoop gameState paths
             "stats" -> do
                 printLines ["Twoje statystyki:", show (stats gameState)]
                 gameLoop gameState paths
             "inventory" -> do
-                putStrLn (seeInventory gameState)
+                printLines [seeInventory (gameState)]
                 gameLoop gameState paths
             "instructions" -> do
                 printInstructions
                 gameLoop gameState paths
             "quit" -> return ()
             _ -> do
-                printLines ["Nieznana komenda.", ""]
+                printLines ["Nieznana komenda. Wyświetl instrukcje używając 'instructions'.", ""]
                 gameLoop gameState paths
     else do 
         return ()
@@ -250,10 +250,10 @@ gameLoop gameState paths = do
 
 printGameState :: GameState -> IO ()
 printGameState gameState = do
-    putStrLn "Items:"
-    mapM_ (putStrLn . show) (itemsMap gameState)
-    putStrLn "\nNPCs:"
-    mapM_ (putStrLn . show) (npcsMap gameState)
+    printLines ["Items:"]
+    printLines (map show (itemsMap gameState))
+    printLines ["", "nNPCs:"]
+    printLines (map show (itemsMap gameState))
 
 
 createPlayer :: IO Stats
