@@ -173,7 +173,6 @@ gameLoop gameState paths = do
     if (running gameState) then do 
         cmd <- readCommand
         let (action, argument) = parseCommand cmd
-        printGameState gameState
         case action of
             "go" -> do
                 let (newGameState, message) = go argument gameState paths
@@ -209,14 +208,6 @@ gameLoop gameState paths = do
                 gameLoop gameState paths
     else do 
         return ()
-
-
-printGameState :: GameState -> IO ()
-printGameState gameState = do
-    printLines ["Items:"]
-    printLines (map show (itemsMap gameState))
-    printLines ["", "nNPCs:"]
-    printLines (map show (npcsMap gameState))
 
 
 createPlayer :: IO Stats
