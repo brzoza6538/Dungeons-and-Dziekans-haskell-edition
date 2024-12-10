@@ -34,18 +34,17 @@ data NPC = NPC
   , energy :: Int
   , attack :: Int
   , defense :: Int
-  , uncooperative :: Bool
   }
   deriving (Eq, Show)
 
 
-dean = NPC "Dziekana" 50 10 4 False
+dean = NPC "Dziekana" 50 10 4
 
-lecturer = NPC "Wykładowcę" 20 5 0 False
+lecturer = NPC "Wykładowcę" 20 5 0
 
-janitor = NPC "Dozorcę" 20 3 3 False
+janitor = NPC "Dozorcę" 20 3 3
 
-vendingMachine = NPC "Automat" 0 0 0 False
+vendingMachine = NPC "Automat" 0 0 0
 
 
 vendingMachineInventory :: [Item]

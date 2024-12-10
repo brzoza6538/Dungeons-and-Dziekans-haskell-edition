@@ -32,15 +32,6 @@ updateStatsAfterTake gameState foundItem =
         _ -> gameState
 
 
-makeUncooperative :: GameState -> NPC-> GameState
-makeUncooperative gameState npc =
-    let updatedNPC = npc { uncooperative = True }
-        updatedNPCLocations =
-            map (\(npc', loc) -> if npc' == npc then (updatedNPC, loc) else (npc', loc)) (npcsMap gameState)
-
-    in gameState { npcsMap = updatedNPCLocations }
-
-
 itemFromMachine :: GameState -> IO (GameState, String)
 itemFromMachine gameState = do
     idx <- randomRIO (0, length vendingMachineInventory - 1)
@@ -52,132 +43,149 @@ itemFromMachine gameState = do
     return (newGameState { inventory = newInventory }, "Otrzymujesz: " ++ (itemName item))
 
 
-talkWithNPC :: GameState -> NPC -> IO GameState
-talkWithNPC gameState npc = 
-  case npcName npc of
-    "Wykładowcę" -> do 
-      printLines ["Witasz wykładowcę, który zaczyna mówić o twoich problemach w nauce", "1) starasz się wytłumaczyć", "2) obrażony wyzywasz go", "3) próbujesz go zmanipulować by ci pomógł"]
-      cmd <- readCommand
-      let (action, argument) = parseCommand cmd
-      case action of
+interactWithLecturer :: GameState -> IO GameState
+interactWithLecturer gameState = do
+    printLines ["Witasz wykładowcę, który zaczyna mówić o twoich problemach w nauce",
+                "1) starasz się wytłumaczyć",
+                "2) obrażony wyzywasz go",
+                "3) próbujesz go zmanipulować by ci pomógł", ""]
+    cmd <- readCommand
+    let (action, argument) = parseCommand cmd
+    case action of
         "1" -> do
-            printLines ["Wykładowca potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie"]
-            return gameState
+            printLines ["Wykładowca potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie", ""]
+            interactWithLecturer gameState
 
         "2" -> do
-            printLines ["Wykładowca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: 'Dosć padlo słów, czas podyskutować'"]
-            return (makeUncooperative gameState npc)
-        
+            printLines ["Wykładowca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: 'Dosć padło słów, czas podyskutować'", ""]
+            attackNPC gameState
 
         "3" -> do
             idx <- randomRIO (0 :: Int, 1 :: Int)
             if (idx == 1 && herosCharisma (stats gameState) > 0) then do
-                printLines ["Dzięki odrobinie charyzmy wykadowca zdradza ci sekret. Przed wyjściem powinien właśnie teraz stać dozorca. Jest to rozsądny człowiek może uda ci się z nim dogadać"]
-                let 
-                    newMap = addJanitor (npcsMap gameState)
-                    newGameState = gameState {npcsMap = newMap}
+                printLines ["Dzięki odrobinie charyzmy wykadowca zdradza ci sekret. Przed wyjściem powinien właśnie teraz stać dozorca. Jest to rozsądny człowiek, może uda ci się z nim dogadać", ""]
+                let newMap = addJanitor (npcsMap gameState)
+                let updatedNPCLocations = filter (\(npc', _) -> npcName npc' /= "Wykładowcę") newMap
+                let newGameState = gameState { npcsMap = updatedNPCLocations }
                 return newGameState
             else do  
-                printLines ["Akurat kiedy myślałeś że wykładowca za chwilę powie coś ważnego, nagle twarz mu pochmurnieje. Zauważył co próbowałeś zrobić i nie jest zadowolony"]
-                let newGameState = makeUncooperative gameState npc
-                return newGameState
+                printLines ["Akurat kiedy myślałeś że wykładowca za chwilę powie coś ważnego, nagle twarz mu pochmurnieje. Zauważył co próbowałeś zrobić i nie jest zadowolony.", ""]
+                attackNPC gameState
 
         _ -> do 
-            printLines ["Wykładowca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?"]
-            return gameState 
+            printLines ["Wykładowca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?", ""]
+            interactWithLecturer gameState
 
 
-    "Automat" -> do 
-      printLines ["Automat buczy nieznacznie, czy masz na coś ochotę?", "1) potrzebuję się napić", "2) przydałyby mi się jakieś lepsze notatki", "3) chyba nic nie potrzebuję"]
-      cmd <- readCommand
-      let (action, argument) = parseCommand cmd
-      case action of
-        "3" -> do
-            printLines ["Chyba rzeczywiście to nie czas na zakupy."]
-            return gameState
-        _ -> do 
-            (newGameState, message) <- itemFromMachine gameState
-            printLines ["Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi instrukcjami, podając ci coś innego.", message]
-
-            return (makeUncooperative newGameState npc)
-  
-
-
-    "Dozorcę" -> do 
-      printLines ["Witasz Dozorcę, jednak ten wydaje się ciebie nie słuchać", "1) tłumaczysz swoją sytuację", "2) obrażony każesz mu otworzyć drzwi w mniej niż uprzejmy sposób", "3) próbujesz ponownie wykorzystać swoją charyzmę"]
-      cmd <- readCommand
-      let (action, argument) = parseCommand cmd
-      case action of
-        "1" -> do
-            printLines ["Dozorca potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie."]
-            return gameState
-
-        "2" -> do
-            printLines ["Dozorca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: dosć padlo słów, czas podyskutować"]
-            return (makeUncooperative gameState npc)
+interactWithVendingMachine :: GameState -> IO GameState
+interactWithVendingMachine gameState = do
+    if vendingMachineUsed gameState then do
+        printLines ["Znajduje się tu automat, jednak wydaje się, że nie działa."]
+        return gameState
+    else do
+        printLines ["Automat buczy nieznacznie, czy masz na coś ochotę?", 
+                    "1) potrzebuję się napić", 
+                    "2) przydałyby mi się jakieś lepsze notatki", 
+                    "3) chyba nic nie potrzebuję",
+                    "4) uderz w automat, może się uda wyciągnąć kilka rzeczy", ""]
+        cmd <- readCommand
+        let (action, _) = parseCommand cmd
+        case action of
+            "1" -> itemAction gameState
+            "2" -> itemAction gameState
+            "3" -> do
+                printLines ["Może rzeczywiście to nie czas na zakupy.", ""]
+                return gameState
+            "4" -> do
+                attackNPC gameState
+            _ -> do
+                printLines ["Automat wydaje się nie rozumieć twojego wyboru, może spróbujesz jeszcze raz?", ""]
+                interactWithVendingMachine gameState
+  where
+    itemAction :: GameState -> IO GameState
+    itemAction gs = do
+        (newGameState, message) <- itemFromMachine gs
+        printLines ["Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi instrukcjami, podając ci coś innego. Wraz z wyrzuceniem przedmiotu, światełko w automacie zaczyna intensywnie migać, aż w końcu gaśnie.", "", message, ""]
+        let updatedGameState = newGameState { vendingMachineUsed = True } 
+        return updatedGameState
         
 
+      
+interactWithJanitor :: GameState -> IO GameState
+interactWithJanitor gameState = do
+    printLines ["Witasz Dozorcę, jednak ten wydaje się ciebie nie słuchać",
+                "1) tłumaczysz swoją sytuację",
+                "2) obrażony każesz mu otworzyć drzwi w mniej niż uprzejmy sposób",
+                "3) próbujesz ponownie wykorzystać swoją charyzmę", ""]
+    cmd <- readCommand
+    let (action, argument) = parseCommand cmd
+    case action of
+        "1" -> do
+            printLines ["Dozorca potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie.", ""]
+            interactWithJanitor gameState
+
+        "2" -> do
+            printLines ["Dozorca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: dosć padlo słów, czas podyskutować", ""]
+            attackNPC gameState
+        
         "3" -> do
             idx <- randomRIO (0 :: Int, 1 :: Int)
             if (idx == 1 && herosCharisma (stats gameState) > 0) then do
-                printLines ["Odrobina uprzejmości i dozorca od razu się do ciebie otwiera. Słuchasz jego historii jak sam był kiedyś studentem, ale warunki zniszczyły mu życie. Po rozmowie postanawia się cie wypuścić. Udało ci się uciec, ale nadal nie rozwiązałeś swoich problemów", "Koniec gry, przeżyłeś dzisiejszy dzień, ale jest to życie pełne strachu i niepewności. Czy to jest to czego chciałeś?"]
+                printLines ["Odrobina uprzejmości i dozorca od razu się do ciebie otwiera. Słuchasz jego historii jak sam był kiedyś studentem, ale warunki zniszczyły mu życie. Po rozmowie postanawia się cie wypuścić. Udało ci się uciec, ale nadal nie rozwiązałeś swoich problemów", "Koniec gry, przeżyłeś dzisiejszy dzień, ale jest to życie pełne strachu i niepewności. Czy to jest to czego chciałeś?", "", ""]
                 let newGameState = gameState { running = False } 
                 return newGameState
 
             else do  
-                printLines ["Jak się okazuje, dozorca nie ma najmniejszej ochoty z tobą rozmawiać, a twoje natręctwo tylko go zirytowało."]
-                let newGameState = makeUncooperative gameState npc
-                return newGameState
-
+                printLines ["Jak się okazuje, dozorca nie ma najmniejszej ochoty z tobą rozmawiać, a twoje natręctwo tylko go zirytowało.", ""]
+                attackNPC gameState
         _ -> do 
-            printLines ["Dozorca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?"]
-            return gameState 
+            printLines ["Dozorca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?", ""]
+            interactWithJanitor gameState
 
 
 
-    "Dziekana" -> do 
-      printLines ["Witasz Dziekana, jednak ten nie wydaje się chętny do słuchania wymówek", "1) tłumaczysz swoją sytuację", "2) obrażony nonszalancją dziekana wybuchasz i mówisz dwa razy więcej niż powinieneś", "3) próbujesz ponownie wykorzystać swój urok osobisty", "4) mówisz dziekanowi że masz ze sobą legendarny złoty strzał"]
-      cmd <- readCommand
-      let (action, argument) = parseCommand cmd
-      case action of
+interactWithDean :: GameState -> IO GameState
+interactWithDean gameState = do 
+    printLines ["Witasz Dziekana, jednak ten nie wydaje się chętny do słuchania wymówek",
+                "1) tłumaczysz swoją sytuację",
+                "2) obrażony nonszalancją dziekana wybuchasz i mówisz dwa razy więcej niż powinieneś",
+                "3) próbujesz wykorzystać swój urok osobisty",
+                "4) mówisz dziekanowi że masz ze sobą legendarny złoty strzał", ""]
+    cmd <- readCommand
+    let (action, argument) = parseCommand cmd
+    case action of
         "1" -> do
-            printLines ["Dziekan potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie."]
-            return gameState
+            printLines ["Dziekan potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie.", ""]
+            interactWithDean gameState
 
         "2" -> do
-            printLines ["Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo."]
-            return (makeUncooperative gameState npc)
+            printLines ["Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo.", ""]
+            attackNPC gameState
         
-
         "3" -> do
             idx <- randomRIO (0 :: Int, 1 :: Int)
             if (idx == 1 && herosCharisma (stats gameState) > 1) then do
-                printLines ["Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Po chwili namyslu postanawia ci pomóc. Możesz uznać swój dług za spłacony", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach."]
+                printLines ["Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Po chwili namysłu postanawia ci pomóc. Możesz uznać swój dług za spłacony", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach.", "", ""]
                 let newGameState = gameState { running = False } 
                 return newGameState
-
             else do  
-                printLines ["Dziekan wydaje się słuchać ciebie z uwagą, jednak w połowie twojej historii o tragedii kiedy twój trzeci pies zjadł również twój laptop podczas pogrzebu twojej babci, zaczyna się z ciebie śmiać. Nie rozwiążesz tego rozmową."]
-                let newGameState = makeUncooperative gameState npc
-                return newGameState
+                printLines ["Dziekan wydaje się słuchać ciebie z uwagą, jednak w połowie twojej historii o tragedii jak twój trzeci pies zjadł również twój laptop podczas pogrzebu twojej babci, zaczyna się z ciebie śmiać. Nie rozwiążesz tego rozmową.", ""]
+                attackNPC gameState
 
         "4" -> do
-
-            let strzalCheck = any (\item -> itemName item == "Zloty strzal") (inventory gameState)
+            let strzalCheck = any (\item -> itemName item == "Złoty strzał") (inventory gameState)
             if strzalCheck then do
-                printLines ["Dziekan stoi przez chwilę oniemiały, był pewny że to tylko legenda. Jednak wie dobrze że jest to coś co musi uhonorować", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że masz przyszłość"]
+                printLines ["Dziekan stoi przez chwilę oniemiały, był pewny że to tylko legenda. Jednak wie dobrze że jest to coś co musi uhonorować", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że masz przyszłość.", "", ""]
                 let newGameState = gameState { running = False } 
                 return newGameState
                 
             else do
-                printLines ["Dziekan stoi przez chwilę oniemiały, był pewny śmieje się z ciebie i pyta czy to też pies ci zjadł"]
-                return (makeUncooperative gameState npc)
-
+                printLines ["Dziekan stoi przez chwilę oniemiały, był pewny śmieje się z ciebie i pyta czy to też pies ci zjadł", ""]
+                interactWithDean gameState
 
         _ -> do  
-            printLines ["Dziekan nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?"]
-            return gameState 
-
+            printLines ["Dziekan nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?", ""]
+            interactWithDean gameState
 
 updateNPC :: GameState -> Int -> GameState
 updateNPC gameState damage = 

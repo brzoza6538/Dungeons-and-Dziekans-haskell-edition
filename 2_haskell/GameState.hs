@@ -20,5 +20,6 @@ data GameState = GameState
     , itemsMap :: ItemsLocations
     , npcsMap :: NPCLocations
     , stats :: Stats
+    , vendingMachineUsed :: Bool
     , running :: Bool
     }
