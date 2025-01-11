@@ -96,7 +96,6 @@ Object subclass: GameMap [
         location1_5_i := Location new: '5_i' floor: 1.
         location1_5_j := Location new: '5_j' floor: 1.
 
-        "Dodajemy lokacje do kolekcji"
         self addLocation: location1_1_a.
         self addLocation: location1_1_b.
         self addLocation: location1_1_c.
@@ -309,7 +308,7 @@ Object subclass: GameMap [
 	]
 
     initialize [
-        locations := OrderedCollection new.  "Używamy OrderedCollection zamiast Dictionary"
+        locations := OrderedCollection new.
         paths := OrderedCollection new.
         self initializeFirstFloor.
         self initializeSecondFloor.
@@ -323,8 +322,24 @@ Object subclass: GameMap [
         locations add: aLocation.
     ]
 
+	reverseDirectionFor: aDirection [
+		| directions |
+		directions := Dictionary new.
+		directions at: 'n' put: 's'.
+		directions at: 's' put: 'n'.
+		directions at: 'e' put: 'w'.
+		directions at: 'w' put: 'e'.
+		directions at: 'up' put: 'down'.
+		directions at: 'down' put: 'up'.
+		^directions at: aDirection ifAbsent: [nil].
+	]
+
     addPathFrom: fromLocation direction: direction to: toLocation [
+        | reverseDirection |
         paths add: { fromLocation. direction. toLocation }.
+		
+        reverseDirection := self reverseDirectionFor: direction.
+        paths add: { toLocation. reverseDirection. fromLocation }.
     ]
 
     moveInDirection: fromLocation direction: aDirection [
