@@ -38,7 +38,7 @@ Object subclass: Game [
     init [
         isGameOver := false.
         map := GameMap new.
-        currentLocation := map locations at: 'start'.
+        currentLocation := map locations first.  "Przypisujemy pierwszą lokację z listy"
     ]
 
     "Print strings from array in separate lines."
