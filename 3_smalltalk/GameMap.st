@@ -1,36 +1,3 @@
-Object subclass: Location [
-    | name floor items npcs |
-
-    Location class >> new: aName floor: aFloor [
-        ^super new initialize: aName floor: aFloor.
-    ]
-
-    initialize: aName floor: aFloor [
-        name := aName.
-        floor := aFloor.
-        items := OrderedCollection new.
-        npcs := OrderedCollection new.
-    ]
-
-    Location >> name [
-        ^name.
-    ]
-
-    addItem: anItem [
-        items add: anItem.
-    ]
-
-    addNPC: aNPC [
-        npcs add: aNPC.
-    ]
-
-    describe [
-        ^'Jesteś na ', floor asString, '. piętrze, korytarz ', name, ' ' ,
-           (items isEmpty ifTrue: [''] ifFalse: ['Znajdujesz: ', items asCommaString]), ' ' ,
-           (npcs isEmpty ifTrue: [''] ifFalse: ['Spotykasz: ', npcs asCommaString]).
-    ]
-]
-
 Object subclass: GameMap [
     | locations paths |
 
@@ -43,7 +10,8 @@ Object subclass: GameMap [
 		location1_2_a location1_2_b location1_2_c location1_2_d location1_2_e location1_2_f location1_2_g location1_2_h location1_2_i location1_2_j
 		location1_3_a location1_3_b location1_3_c location1_3_d location1_3_e location1_3_f location1_3_g location1_3_h location1_3_i location1_3_j
 		location1_4_a location1_4_b location1_4_c location1_4_d location1_4_e location1_4_f location1_4_g location1_4_h location1_4_i location1_4_j
-		location1_5_a location1_5_b location1_5_c location1_5_d location1_5_e location1_5_f location1_5_g location1_5_h location1_5_i location1_5_j|
+		location1_5_a location1_5_b location1_5_c location1_5_d location1_5_e location1_5_f location1_5_g location1_5_h location1_5_i location1_5_j
+		poorNotes outdatedRegulations |
 
         location1_1_a := Location new: '1_a' floor: 1.
         location1_1_b := Location new: '1_b' floor: 1.
@@ -95,6 +63,12 @@ Object subclass: GameMap [
         location1_5_h := Location new: '5_h' floor: 1.
         location1_5_i := Location new: '5_i' floor: 1.
         location1_5_j := Location new: '5_j' floor: 1.
+
+        poorNotes := Item new: 'Slabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie daja duzo, ale lepszy rydz niz nic. (+2 ataku)' stat: 'Attack' value: 2.
+		outdatedRegulations := Item new: 'Nieaktualny regulamin studiow' description: 'Zbior kartek, na ktorych widnieje wielka liczba ''2005''. Moze cos jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
+
+        location1_2_b addItem: poorNotes.
+        location1_1_a addItem: outdatedRegulations.
 
         self addLocation: location1_1_a.
         self addLocation: location1_1_b.
@@ -178,8 +152,6 @@ Object subclass: GameMap [
 		self addPathFrom: location1_3_f direction: 's' to: location1_4_f.
 		self addPathFrom: location1_4_f direction: 'e' to: location1_4_g.
 
-		"todo self addPathFrom: location1_4_g direction: 'up' to: location2_1_a."
-
 		self addPathFrom: location1_3_e direction: 'n' to: location1_2_e.
 		self addPathFrom: location1_2_e direction: 'w' to: location1_2_d.
 		self addPathFrom: location1_2_d direction: 'n' to: location1_1_d.
@@ -219,7 +191,7 @@ Object subclass: GameMap [
     initializeSecondFloor [
         | location2_1_a location2_1_b location2_1_c location2_1_d location2_1_e location2_2_a location2_2_b location2_2_c location2_2_d location2_2_e
 		location2_3_a location2_3_b location2_3_c location2_3_d location2_3_e location2_4_a location2_4_b location2_4_c location2_4_d location2_4_e
-		location2_5_a location2_5_b location2_5_c location2_5_d location2_5_e |
+		location2_5_a location2_5_b location2_5_c location2_5_d location2_5_e location1_4_g jackpot jackpotLocations jackpotLocationName jackpotLocation |
 
         location2_1_a := Location new: '1_a' floor: 2.
         location2_1_b := Location new: '1_b' floor: 2.
@@ -246,6 +218,15 @@ Object subclass: GameMap [
         location2_5_c := Location new: '5_c' floor: 2.
         location2_5_d := Location new: '5_d' floor: 2.
         location2_5_e := Location new: '5_e' floor: 2.
+
+		jackpot := Item new: 'Złoty strzał' description: 'Mówi się o nim jak o legendzie, podobno posiadacz złotego strzału może za darmo anulować wszystkie warunki.' stat: nil value: 0.
+		
+		jackpotLocations := #('4_d' '2_a' '1_d' '1_e' '5_c').
+		jackpotLocationName := jackpotLocations atRandom.
+		
+		jackpotLocation := locations detect: [:loc | loc name = jackpotLocationName] ifNone: [nil].
+
+		jackpotLocation addItem: jackpot.
 
         self addLocation: location2_1_a.
         self addLocation: location2_1_b.
