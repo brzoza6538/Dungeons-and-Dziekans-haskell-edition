@@ -18,6 +18,6 @@ sudo docker build -t gnu-smalltalk .
 ```
 2. Uruchom grę używając komendy
 ```bash
-bash ./gst-run.sh DnD.st
+bash gst-run.sh DnD.st
 ```
 3. Graj!

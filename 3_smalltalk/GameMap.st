@@ -64,8 +64,8 @@ Object subclass: GameMap [
         location1_5_i := Location new: '5_i' floor: 1.
         location1_5_j := Location new: '5_j' floor: 1.
 
-        poorNotes := Item new: 'Slabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie daja duzo, ale lepszy rydz niz nic. (+2 ataku)' stat: 'Attack' value: 2.
-		outdatedRegulations := Item new: 'Nieaktualny regulamin studiow' description: 'Zbior kartek, na ktorych widnieje wielka liczba ''2005''. Moze cos jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
+        poorNotes := Item new: 'Słabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie dają dużo, ale lepszy rydz niż nic. (+2 ataku)' stat: 'Attack' value: 2.
+		outdatedRegulations := Item new: 'Nieaktualny regulamin studiów' description: 'Zbiór kartek, na których widnieje wielka liczba ''2005''. Może coś jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
 
         location1_2_b addItem: outdatedRegulations.
         location1_3_d addItem: poorNotes.
@@ -134,7 +134,7 @@ Object subclass: GameMap [
 		vmLocation := locations detect: [:loc | loc name = vmLocationName] ifNone: [nil].
 		vmLocation addNPC: vendingMachine.
 
-		lecturer := NPC new: 'Wykladowca' energy: 20 attack: 5 defense: 0 inventory: #().
+		lecturer := NPC new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
 
 		lecturerLocation := vmLocations select: [:each | each ~= vmLocationName].
 		lecturerLocationName := vmLocations atRandom.

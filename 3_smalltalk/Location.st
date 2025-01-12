@@ -56,7 +56,7 @@ Object subclass: Location [
                 ].
             ].
 
-        ^'Jestes na ', floor asString, '. pietrze, korytarz ', name, '. ', 
+        ^'Jesteś na ', floor asString, '. piętrze, korytarz ', name, '. ', 
 '
 ', itemDescriptions, 
 '

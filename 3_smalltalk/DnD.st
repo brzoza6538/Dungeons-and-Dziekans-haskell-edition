@@ -10,27 +10,27 @@ Object subclass: Game [
     | isGameOver map currentLocation inventory |
 
     introductionText := #(
-        'Witaj w Dungeons and Dziekans. Jestes studentem, który niedawno obronil prace inzynierska. Przy odbiorze dyplomu z dziekanatu wyszlo na jaw, ze nie oplaciles warunku. Znajdz dziekana i sie z nim rozmow lub ucieknij niepostrzezenie.'
+        'Witaj w Dungeons and Dziekans. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie.'
     ).
 
     instructionsText := #(
         ''
-        'Dostepne akcje to:'
-        'start                  -- Rozpocznij gre.'
-        'go n                   -- Idz w kierunku polnocnym.'
-        'go e                   -- Idz w kierunku wschodnim.'
-        'go w                   -- Idz w kierunku zachodnim.'
-        'go s                   -- Idz w kierunku poludniowym.'
-        'go up                  -- Idz na gore.'
-        'go down                -- Idz na dol.'
-        'take <item_name>       -- Podnies przedmiot.'
-        'drop <item_name>       -- Upusc przedmiot.'
-        'look                   -- Rozejrzyj sie.'
-        'stats                  -- Wyswietl swoje statystyki.'
-        'inventory              -- Wyswietl swoje przedmioty.'
-        'instructions           -- Wyswietl instrukcje ponownie.'
-        'quit                   -- Zakoncz rozgrywke i wyjdz.'
-        ''
+        'Dostępne akcje to:'
+        'start                  -- Rozpocznij grę.'
+        'go n                   -- Idź w kierunku północnym.'
+        'go e                   -- Idź w kierunku wschodnim.'
+        'go w                   -- Idź w kierunku zachodnim.'
+        'go s                   -- Idź w kierunku południowym.'
+        'go up                  -- Idź na górę.'
+        'go down                -- Idź na dół.'
+        'take <item_name>       -- Podnieś przedmiot.'
+        'drop <item_name>       -- Upuść przedmiot.'
+        'look                   -- Rozejrzyj się.'
+        'stats                  -- Wyświetl swoje statystyki.'
+        'inventory              -- Wyświetl swoje przedmioty.'
+        'instructions           -- Wyświetl instrukcje ponownie.'
+        'quit                   -- Zakończ rozgrywkę i wyjdź.'
+        '' 
     ).
 
     Game class >> new [
