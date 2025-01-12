@@ -345,9 +345,11 @@ Object subclass: GameMap [
     addPathFrom: fromLocation direction: direction to: toLocation [
         | reverseDirection |
         paths add: { fromLocation. direction. toLocation }.
+        fromLocation addDirection: direction.
 		
         reverseDirection := self reverseDirectionFor: direction.
         paths add: { toLocation. reverseDirection. fromLocation }.
+        toLocation addDirection: reverseDirection.
     ]
 
     moveInDirection: fromLocation direction: aDirection [

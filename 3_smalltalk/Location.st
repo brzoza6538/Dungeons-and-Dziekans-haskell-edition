@@ -1,5 +1,5 @@
 Object subclass: Location [
-    | name floor items npcs |
+    | name floor items npcs directions |
 
     Location class >> new: aName floor: aFloor [
         ^super new initialize: aName floor: aFloor.
@@ -8,6 +8,7 @@ Object subclass: Location [
     initialize: aName floor: aFloor [
         name := aName.
         floor := aFloor.
+        directions := OrderedCollection new.
         items := OrderedCollection new.
         npcs := OrderedCollection new.
     ]
@@ -32,10 +33,14 @@ Object subclass: Location [
         npcs add: aNPC.
     ]
 
+    addDirection: aDirection [
+        directions add: aDirection.
+    ]
+
     describe [
-    | itemDescriptions npcDescriptions |
+    | itemDescriptions npcDescriptions directionDescriptions |
     itemDescriptions := items isEmpty
-        ifTrue: ['Nie widzisz tutaj żadnych przedmiotów.']
+        ifTrue: ['']
         ifFalse: [
             String streamContents: [:stream |
                 items do: [:item |
@@ -47,7 +52,7 @@ Object subclass: Location [
         ].
 
         npcDescriptions := npcs isEmpty
-            ifTrue: ['Nie ma tu nikogo.']
+            ifTrue: ['']
             ifFalse: [
                 String streamContents: [:stream |
                     npcs do: [:npc |
@@ -55,11 +60,28 @@ Object subclass: Location [
                     stream contents.
                 ].
             ].
+    
+        directionDescriptions := directions isEmpty
+            ifTrue: ['Nie możesz nigdzie pójść, jak to możliwe?']
+            ifFalse: [
+                'Dostępne kierunki: ', (String streamContents: [:stream |
+                    directions do: [:direction |
+                        stream nextPutAll: direction.
+                        direction = directions last
+                            ifFalse: [stream nextPutAll: ', ']
+                            ifTrue: [stream nextPutAll: '.'].
+                    ].
+                ])
+            ].
 
-        ^'Jesteś na ', floor asString, '. piętrze, korytarz ', name, '. ', 
-'
-', itemDescriptions, 
-'
-', npcDescriptions.
+
+        ^'Jesteś na ', floor asString, '. piętrze, korytarz ', name, '. ', '
+', 
+        (directionDescriptions isEmpty ifTrue: [''] ifFalse: [directionDescriptions, '
+']),
+        (itemDescriptions isEmpty ifTrue: [''] ifFalse: [itemDescriptions, '
+']),
+        (npcDescriptions isEmpty ifTrue: [''] ifFalse: [npcDescriptions, '
+']).
     ]
 ]

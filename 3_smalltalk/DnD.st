@@ -104,6 +104,8 @@ Object subclass: Game [
                 newLocation := map moveInDirection: currentLocation direction: direction.
                 newLocation ifNotNil: [
                     currentLocation := newLocation.
+                    self printLines: { 'Idziesz w kierunku ', direction, '.' }.
+                    self printLines: { '' }.
                 	self printLines: { currentLocation describe }.
                 ] ifNil: [
                     self printLines: { 'Nie można tam przejść.' }.
