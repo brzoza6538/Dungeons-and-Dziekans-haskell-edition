@@ -1,19 +1,23 @@
 # Dungeons and Dziekans
 ## Instrukcja uruchomienia
-1. Zainstaluj paczkę `gnu-smalltalk`. Przykładowo na systemie bazującym na Debianie:
+### Systemy debianowe
+1. Zainstaluj paczkę `gnu-smalltalk`:
 ```bash
 sudo apt-get install -y gnu-smalltalk
 ```
-2. Uruchom środowisko
+2. Uruchom grę używając komendy:
 ```bash
-gst
+gst DnD.st
 ```
-3. Zaimportuj pliki:
+3. Graj!
+
+### Uniwersalnie
+1. Stwórz obraz Dockera z zainstalowanym `gnu-smalltalk`:
 ```bash
-FileStream fileIn: 'GameMap.st'
+sudo docker build -t gnu-smalltalk .  
 ```
-4. Uruchom grę używając komendy:
+2. Uruchom grę używając komendy
 ```bash
-FileStream fileIn: 'DnD.st'
+bash gst-run.sh DnD.st
 ```
-5. Graj!
+3. Graj!

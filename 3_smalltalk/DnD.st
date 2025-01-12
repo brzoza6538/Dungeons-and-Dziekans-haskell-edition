@@ -1,6 +1,10 @@
 "Dungeons and Dziekans
 Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska"
 
+FileStream fileIn: 'GameMap.st'.
+FileStream fileIn: 'Item.st'.
+FileStream fileIn: 'Location.st'.
+
 Object subclass: Game [
     | isGameOver map currentLocation inventory |
 
