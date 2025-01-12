@@ -11,7 +11,7 @@ Object subclass: GameMap [
 		location1_3_a location1_3_b location1_3_c location1_3_d location1_3_e location1_3_f location1_3_g location1_3_h location1_3_i location1_3_j
 		location1_4_a location1_4_b location1_4_c location1_4_d location1_4_e location1_4_f location1_4_g location1_4_h location1_4_i location1_4_j
 		location1_5_a location1_5_b location1_5_c location1_5_d location1_5_e location1_5_f location1_5_g location1_5_h location1_5_i location1_5_j
-		poorNotes outdatedRegulations |
+		poorNotes outdatedRegulations betterNotes upToDateRegulations formalWear energyDrink vendingMachine vmLocations vmLocationName vmLocation lecturer lecturerLocationName lecturerLocation|
 
         location1_1_a := Location new: '1_a' floor: 1.
         location1_1_b := Location new: '1_b' floor: 1.
@@ -67,8 +67,13 @@ Object subclass: GameMap [
         poorNotes := Item new: 'Slabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie daja duzo, ale lepszy rydz niz nic. (+2 ataku)' stat: 'Attack' value: 2.
 		outdatedRegulations := Item new: 'Nieaktualny regulamin studiow' description: 'Zbior kartek, na ktorych widnieje wielka liczba ''2005''. Moze cos jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
 
-        location1_2_b addItem: poorNotes.
-        location1_1_a addItem: outdatedRegulations.
+        location1_2_b addItem: outdatedRegulations.
+        location1_3_d addItem: poorNotes.
+
+		betterNotes := Item new: 'Lepsze notatki' description: 'Notatki pozostawione przez studenta pierwszego roku, ale studiów magisterskich, zmagającego się z tym samym problemem umorzenia warunku (+3 ataku).' stat: 'Attack' value: 3.
+		upToDateRegulations := Item new: 'Nowy regulamin' description: 'Zbiór zapisów, którymi możesz się osłonić przed słownymi ciosami pracowników uczelni (+3 obrony)' stat: 'Defense' value: 3.
+		formalWear := Item new: 'Toga' description: 'Modny dodatek. Ludzie będą traktować cię poważnie, nawet jeśli nie masz nic mądrego do powiedzenia (+1 charyzmy)' stat: 'Charisma' value: 1.
+		energyDrink := Item new: 'Energetyk' description: 'Niezastąpiony w momentach kryzysowych. Daje energię, np.: by dokończyć noc przed oddaniem (prawie) każdy projekt (+10 energii)' stat: 'Energy' value: 10.
 
         self addLocation: location1_1_a.
         self addLocation: location1_1_b.
@@ -120,6 +125,21 @@ Object subclass: GameMap [
         self addLocation: location1_5_h.
         self addLocation: location1_5_i.
         self addLocation: location1_5_j.
+
+
+		vendingMachine := NPC new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
+
+		vmLocations := #('4_d' '2_a' '1_d' '1_e' '5_c').
+		vmLocationName := vmLocations atRandom.
+		vmLocation := locations detect: [:loc | loc name = vmLocationName] ifNone: [nil].
+		vmLocation addNPC: vendingMachine.
+
+		lecturer := NPC new: 'Wykladowca' energy: 20 attack: 5 defense: 0 inventory: #().
+
+		lecturerLocation := vmLocations select: [:each | each ~= vmLocationName].
+		lecturerLocationName := vmLocations atRandom.
+		lecturerLocation := locations detect: [:loc | loc name = lecturerLocationName] ifNone: [nil].
+		lecturerLocation addNPC: lecturer.
 
 		self addPathFrom: location1_1_a direction: 'e' to: location1_1_b.
 		self addPathFrom: location1_1_b direction: 'e' to: location1_1_c.
@@ -191,7 +211,7 @@ Object subclass: GameMap [
     initializeSecondFloor [
         | location2_1_a location2_1_b location2_1_c location2_1_d location2_1_e location2_2_a location2_2_b location2_2_c location2_2_d location2_2_e
 		location2_3_a location2_3_b location2_3_c location2_3_d location2_3_e location2_4_a location2_4_b location2_4_c location2_4_d location2_4_e
-		location2_5_a location2_5_b location2_5_c location2_5_d location2_5_e location1_4_g jackpot jackpotLocations jackpotLocationName jackpotLocation |
+		location2_5_a location2_5_b location2_5_c location2_5_d location2_5_e location1_4_g jackpot jackpotLocations jackpotLocationName jackpotLocation dean removedLocation deaLocationName deanLocation |
 
         location2_1_a := Location new: '1_a' floor: 2.
         location2_1_b := Location new: '1_b' floor: 2.
@@ -223,10 +243,17 @@ Object subclass: GameMap [
 		
 		jackpotLocations := #('4_d' '2_a' '1_d' '1_e' '5_c').
 		jackpotLocationName := jackpotLocations atRandom.
-		
 		jackpotLocation := locations detect: [:loc | loc name = jackpotLocationName] ifNone: [nil].
-
 		jackpotLocation addItem: jackpot.
+
+		dean := NPC new: 'Dziekan' energy: 50 attack: 10 defense: 4 inventory: #().
+
+		removedLocation := jackpotLocations select: [:each | each ~= jackpotLocationName].
+
+		jackpotLocations do: [:deanLocationName |
+            deanLocation := locations detect: [:loc | loc name = deanLocationName] ifNone: [nil].
+            deanLocation addNPC: dean.
+        ].
 
         self addLocation: location2_1_a.
         self addLocation: location2_1_b.

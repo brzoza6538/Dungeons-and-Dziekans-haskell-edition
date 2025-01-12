@@ -9,7 +9,6 @@ Object subclass: Item [
             itemValue: value.
     ]
 
-    "Metody ustawiające wartości (settery)"
     itemName: aName [
         itemName := aName.
     ]
