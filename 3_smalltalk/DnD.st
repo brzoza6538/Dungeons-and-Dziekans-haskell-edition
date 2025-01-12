@@ -3,6 +3,7 @@ Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska"
 
 FileStream fileIn: 'GameMap.st'.
 FileStream fileIn: 'Item.st'.
+FileStream fileIn: 'NPC.st'.
 FileStream fileIn: 'Location.st'.
 
 Object subclass: Game [
