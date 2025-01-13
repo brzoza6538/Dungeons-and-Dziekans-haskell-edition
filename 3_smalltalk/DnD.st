@@ -1,10 +1,10 @@
 "Dungeons and Dziekans
 Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska"
 
-FileStream fileIn: 'GameMap.st'.
 FileStream fileIn: 'Item.st'.
 FileStream fileIn: 'NPC.st'.
 FileStream fileIn: 'Location.st'.
+FileStream fileIn: 'GameMap.st'.
 
 Object subclass: Game [
     | isGameOver map currentLocation inventory |
@@ -43,7 +43,7 @@ Object subclass: Game [
     init [
         isGameOver := false.
         map := GameMap new.
-        currentLocation := map locations first.
+        currentLocation := map locations at: '1_1_a' ifAbsent: [nil].
         inventory := OrderedCollection new.
     ]
 

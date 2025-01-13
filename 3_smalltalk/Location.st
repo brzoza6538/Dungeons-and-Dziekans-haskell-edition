@@ -8,7 +8,7 @@ Object subclass: Location [
     initialize: aName floor: aFloor [
         name := aName.
         floor := aFloor.
-        directions := OrderedCollection new.
+        directions := Dictionary new.
         items := OrderedCollection new.
         npcs := OrderedCollection new.
     ]
@@ -17,12 +17,16 @@ Object subclass: Location [
         ^name.
     ]
 
-	Location >> floor [
-		^floor.
-	]
+    Location >> floor [
+        ^floor.
+    ]
 
     Location >> items [
         ^items.
+    ]
+
+    Location >> directions [
+        ^directions.
     ]
 
     addItem: anItem [
@@ -33,8 +37,30 @@ Object subclass: Location [
         npcs add: aNPC.
     ]
 
-    addDirection: aDirection [
-        directions add: aDirection.
+    addDirection: aDirection to: aLocation [
+        directions at: aDirection put: aLocation.
+    ]
+
+    reverseDirectionFor: aDirection [
+        | reverseMap |
+        reverseMap := Dictionary new.
+        reverseMap at: 'n' put: 's'.
+        reverseMap at: 's' put: 'n'.
+        reverseMap at: 'e' put: 'w'.
+        reverseMap at: 'w' put: 'e'.
+        reverseMap at: 'up' put: 'down'.
+        reverseMap at: 'down' put: 'up'.
+        ^reverseMap at: aDirection ifAbsent: [nil].
+    ]
+
+    addPath: fromDirection to: toLocation [
+        | reverseDirection |
+        self addDirection: fromDirection to: toLocation.
+
+        reverseDirection := self reverseDirectionFor: fromDirection.
+        reverseDirection ifNotNil: [
+            toLocation addDirection: reverseDirection to: self.
+        ].
     ]
 
     describe [
@@ -63,16 +89,21 @@ Object subclass: Location [
     
         directionDescriptions := directions isEmpty
             ifTrue: ['Nie możesz nigdzie pójść, jak to możliwe?']
-            ifFalse: [
-                'Dostępne kierunki: ', (String streamContents: [:stream |
-                    directions do: [:direction |
-                        stream nextPutAll: direction.
-                        direction = directions last
-                            ifFalse: [stream nextPutAll: ', ']
-                            ifTrue: [stream nextPutAll: '.'].
-                    ].
-                ])
+    		ifFalse: [
+        'Dostępne kierunki: ', (String streamContents: [:stream |
+            | first |
+            first := true.
+            directions keysAndValuesDo: [:direction :location |
+                first ifTrue: [
+                    first := false.
+                ] ifFalse: [
+                    stream nextPutAll: ', '.
+                ].
+                stream nextPutAll: direction.
             ].
+			stream nextPutAll: '.'.
+        ])
+    ].
 
 
         ^'Jesteś na ', floor asString, '. piętrze, korytarz ', name, '. ', '
