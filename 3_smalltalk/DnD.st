@@ -1,10 +1,10 @@
 "Dungeons and Dziekans
 Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska"
 
-FileStream fileIn: 'GameMap.st'.
 FileStream fileIn: 'Item.st'.
 FileStream fileIn: 'Player.st'.
 FileStream fileIn: 'Location.st'.
+FileStream fileIn: 'GameMap.st'.
 
 Object subclass: Game [
     | isGameOver map currentLocation student |
@@ -44,7 +44,7 @@ Object subclass: Game [
         | randomGenerator randomBuff |
         isGameOver := false.
         map := GameMap new.
-        currentLocation := map locations first.
+        currentLocation := map locations at: '1_1_a' ifAbsent: [nil].
         
         student := HumanPlayer new: 'Student' energy: 20 attack: 3 defense: 1 inventory: (OrderedCollection new) charisma: 0.
         randomGenerator := Random new.
