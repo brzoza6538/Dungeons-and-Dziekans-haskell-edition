@@ -131,14 +131,14 @@ Object subclass: GameMap [
         formalWear := Item new: 'Toga' description: 'Modny dodatek. Ludzie będą traktować cię poważnie, nawet jeśli nie masz nic mądrego do powiedzenia (+1 charyzmy)' stat: 'Charisma' value: 1.
         energyDrink := Item new: 'Energetyk' description: 'Niezastąpiony w momentach kryzysowych. Daje energię, np.: by dokończyć noc przed oddaniem (prawie) każdy projekt (+10 energii)' stat: 'Energy' value: 10.
 
-        vendingMachine := NPC new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
+        vendingMachine := Player new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
 
         vmLocations := #('1_4_d' '1_2_a' '1_1_d' '1_1_e' '1_5_c').
         vmLocationName := vmLocations atRandom.
         vmLocation := locations at: vmLocationName ifAbsent: [nil].
         vmLocation addNPC: vendingMachine.
 
-        lecturer := NPC new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
+        lecturer := Player new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
 
 		removedLocation := vmLocations select: [:each | each ~= vmLocationName].
         lecturerLocationName := vmLocations atRandom.
@@ -152,7 +152,7 @@ Object subclass: GameMap [
         jackpotLocation := locations at: jackpotLocationName ifAbsent: [nil].
         jackpotLocation addItem: jackpot.
 
-        dean := NPC new: 'Dziekan' energy: 50 attack: 10 defense: 4 inventory: #().
+        dean := Player new: 'Dziekan' energy: 50 attack: 10 defense: 4 inventory: #().
 
         jackpotLocations do: [:deanLocationName |
             deanLocation := locations at: deanLocationName ifAbsent: [nil].
