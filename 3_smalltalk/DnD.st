@@ -7,7 +7,7 @@ FileStream fileIn: 'Player.st'.
 FileStream fileIn: 'Location.st'.
 
 Object subclass: Game [
-    | isGameOver map currentLocation student inventory |
+    | isGameOver map currentLocation student |
 
     introductionText := #(
         'Witaj w Dungeons and Dziekans. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie.'
@@ -46,15 +46,13 @@ Object subclass: Game [
         map := GameMap new.
         currentLocation := map locations first.
         
-        student := HumanPlayer new: 'Student' energy: 20 attack: 3 defense: 1 inventory: #() charisma: 0.
+        student := HumanPlayer new: 'Student' energy: 20 attack: 3 defense: 1 inventory: (OrderedCollection new) charisma: 0.
         randomGenerator := Random new.
         randomBuff := (randomGenerator next * 4) rounded.
         randomBuff = 0 ifTrue: [student energy: 40].
         randomBuff = 1 ifTrue: [student attack: 8].
         randomBuff = 2 ifTrue: [student defense: 4].
         randomBuff = 3 ifTrue: [student charisma: 1].
-
-        inventory := OrderedCollection new.
     ]
 
     "Print strings from array in separate lines."
@@ -72,11 +70,11 @@ Object subclass: Game [
 
     printInventory [
         | inventoryDescriptions |
-		inventoryDescriptions := inventory isEmpty
+		inventoryDescriptions := student inventory isEmpty
 		ifTrue: ['Twój ekwipunek jest pusty.']
 		ifFalse: [
 			String streamContents: [:stream |
-				inventory do: [:item |
+				student inventory do: [:item |
 					stream nextPutAll: 'Twój ekwipunek: ', item itemName, ' - ', item itemDescription; nextPutAll: '. '].
 				stream contents size > 2
 					ifTrue: [stream contents copyFrom: 1 to: stream contents size - 2]
@@ -138,7 +136,7 @@ Object subclass: Game [
                 itemName := cmd copyFrom: 6 to: cmd size.
                 itemToTake := currentLocation items detect: [:item | item itemName = itemName] ifNone: [nil].
                 itemToTake ifNotNil: [
-                    inventory add: itemToTake.
+                    student inventory add: itemToTake.
                     currentLocation items remove: itemToTake.
                     self printLines: { 'Podniosłeś: ', itemToTake itemName }.
                 ] ifNil: [
@@ -149,9 +147,9 @@ Object subclass: Game [
 
             (cmd startsWith: 'drop ') ifTrue: [
                 itemName := cmd copyFrom: 6 to: cmd size.
-                itemToDrop := inventory detect: [:item | item itemName = itemName] ifNone: [nil].
+                itemToDrop := student inventory detect: [:item | item itemName = itemName] ifNone: [nil].
                 itemToDrop ifNotNil: [
-                    inventory remove: itemToDrop.
+                    student inventory remove: itemToDrop.
                     currentLocation addItem: itemToDrop.
                     self printLines: { 'Upuściłeś: ', itemToDrop itemName }.
                 ] ifNil: [
