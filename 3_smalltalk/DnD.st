@@ -3,11 +3,11 @@ Jakub Bąba, Michał Brzeziński, Aleksandra Szymańska"
 
 FileStream fileIn: 'GameMap.st'.
 FileStream fileIn: 'Item.st'.
-FileStream fileIn: 'NPC.st'.
+FileStream fileIn: 'Player.st'.
 FileStream fileIn: 'Location.st'.
 
 Object subclass: Game [
-    | isGameOver map currentLocation inventory |
+    | isGameOver map currentLocation student inventory |
 
     introductionText := #(
         'Witaj w Dungeons and Dziekans. Jesteś studentem, który niedawno obronił pracę inżynierską. Przy odbiorze dyplomu z dziekanatu wyszło na jaw, że nie opłaciłeś warunku. Znajdź dziekana i się z nim rozmów lub ucieknij niepostrzeżenie.'
@@ -41,9 +41,19 @@ Object subclass: Game [
     ]
 
     init [
+        | randomGenerator randomBuff |
         isGameOver := false.
         map := GameMap new.
         currentLocation := map locations first.
+        
+        student := HumanPlayer new: 'Student' energy: 20 attack: 3 defense: 1 inventory: #() charisma: 0.
+        randomGenerator := Random new.
+        randomBuff := (randomGenerator next * 4) rounded.
+        randomBuff = 0 ifTrue: [student energy: 40].
+        randomBuff = 1 ifTrue: [student attack: 8].
+        randomBuff = 2 ifTrue: [student defense: 4].
+        randomBuff = 3 ifTrue: [student charisma: 1].
+
         inventory := OrderedCollection new.
     ]
 
@@ -88,6 +98,7 @@ Object subclass: Game [
 
         self printIntroduction.
         self printInstructions.
+        self printLines: { currentLocation describe }.
 
         "Game loop."
         [isGameOver] whileFalse: [
@@ -115,6 +126,11 @@ Object subclass: Game [
 
             cmd = 'look' ifTrue: [
                 self printLines: { currentLocation describe }.
+                isUnknown := false.
+            ].
+            
+            cmd = 'stats' ifTrue: [
+                self printLines: { student stats }.
                 isUnknown := false.
             ].
             

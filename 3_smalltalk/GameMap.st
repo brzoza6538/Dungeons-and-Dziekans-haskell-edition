@@ -127,14 +127,14 @@ Object subclass: GameMap [
         self addLocation: location1_5_j.
 
 
-		vendingMachine := NPC new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
+		vendingMachine := Player new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
 
 		vmLocations := #('4_d' '2_a' '1_d' '1_e' '5_c').
 		vmLocationName := vmLocations atRandom.
 		vmLocation := locations detect: [:loc | loc name = vmLocationName] ifNone: [nil].
 		vmLocation addNPC: vendingMachine.
 
-		lecturer := NPC new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
+		lecturer := Player new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
 
 		lecturerLocation := vmLocations select: [:each | each ~= vmLocationName].
 		lecturerLocationName := vmLocations atRandom.
@@ -246,7 +246,7 @@ Object subclass: GameMap [
 		jackpotLocation := locations detect: [:loc | loc name = jackpotLocationName] ifNone: [nil].
 		jackpotLocation addItem: jackpot.
 
-		dean := NPC new: 'Dziekan' energy: 50 attack: 10 defense: 4 inventory: #().
+		dean := Player new: 'Dziekan' energy: 50 attack: 10 defense: 4 inventory: #().
 
 		removedLocation := jackpotLocations select: [:each | each ~= jackpotLocationName].
 

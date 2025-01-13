@@ -56,7 +56,7 @@ Object subclass: Location [
             ifFalse: [
                 String streamContents: [:stream |
                     npcs do: [:npc |
-                        stream nextPutAll: 'Spotykasz ', npc npcName, '. '.].
+                        stream nextPutAll: 'Spotykasz ', npc name, '. '.].
                     stream contents.
                 ].
             ].
