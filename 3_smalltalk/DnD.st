@@ -121,8 +121,6 @@ Object subclass: Game [
                     "go to interactions"
                     metNpc := currentLocation encounterNPC.
                     metNpc ifNotNil: [
-                        self printLines: { metNpc name }.
-                        self printLines: { '----' }.
                         currentInteraction := Interaction new: student metNpc: metNpc currentLocation: currentLocation.
 
                         result := currentInteraction interact.
