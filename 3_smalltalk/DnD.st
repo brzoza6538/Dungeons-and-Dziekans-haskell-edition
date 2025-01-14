@@ -139,10 +139,6 @@ Object subclass: Game [
 
             cmd = 'look' ifTrue: [
                 self printLines: { currentLocation describe }.
-                self printLines: { '---------------' }. 
-                self printLines: { currentLocation encounterNPC name }. 
-
-                self printLines: { '---------------' }. 
                 isUnknown := false.
             ].
             

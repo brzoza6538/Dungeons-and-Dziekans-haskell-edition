@@ -113,10 +113,11 @@ Object subclass: GameMap [
 		self addPathBetween: '2_4_e' and: '2_5_e' inDirection: 's'.
 		self addPathBetween: '2_5_e' and: '2_5_d' inDirection: 'w'.
 		self addPathBetween: '2_5_d' and: '2_5_c' inDirection: 'w'.
+        self addPathBetween: '1_4_g' and: '2_1_a' inDirection: 'up'.
 	]
 
     initializeItemsNPCs [
-        | poorNotes outdatedRegulations poorNotesLocation outdatedRegulationsLocation betterNotes upToDateRegulations formalWear energyDrink vendingMachine lecturer jackpot dean jackpotLocations vmLocations vmLocationName vmLocation removedLocation lecturerLocationName lecturerLocation jackpotLocationName jackpotLocation deanLocation custodian |
+        | poorNotes outdatedRegulations poorNotesLocation outdatedRegulationsLocation betterNotes upToDateRegulations formalWear energyDrink vendingMachine lecturer jackpot dean jackpotLocations vmLocations vmLocationName vmLocation availableLocations lecturerLocationName lecturerLocation jackpotLocationName jackpotLocation deanLocation custodian |
 
         poorNotes := Item new: 'Słabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie dają dużo, ale lepszy rydz niż nic. (+2 ataku)' stat: 'Attack' value: 2.
         outdatedRegulations := Item new: 'Nieaktualny regulamin studiów' description: 'Zbiór kartek, na których widnieje wielka liczba ''2005''. Może coś jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
@@ -133,15 +134,14 @@ Object subclass: GameMap [
 
         vendingMachine := Player new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
 
-        vmLocations := #('1_3_d' '1_2_g' '1_5_g' '1_3_j').
+        vmLocations := #('1_3_e' '1_2_g' '1_5_g' '1_3_j').
         vmLocationName := vmLocations atRandom.
         vmLocation := locations at: vmLocationName ifAbsent: [nil].
         vmLocation addNPC: vendingMachine.
 
         lecturer := Player new: 'Wykładowca' energy: 20 attack: 5 defense: 0 inventory: #().
-
-		removedLocation := vmLocations select: [:each | each ~= vmLocationName].
-        lecturerLocationName := vmLocations atRandom.
+        availableLocations := vmLocations select: [:each | each ~= vmLocationName].
+        lecturerLocationName := availableLocations atRandom.
         lecturerLocation := locations at: lecturerLocationName ifAbsent: [nil].
         lecturerLocation addNPC: lecturer.
 

@@ -76,14 +76,14 @@ Object subclass: Interaction [
             randOffset := (Array with: 0 with: 1 with: 2 with: 3) atRandom.
             damage := (randOffset + iStudent attack) - iNpc defense.
             damage := damage > 0 ifTrue: [damage] ifFalse: [0]. 
-            self printLines: { 'Zadajesz ', damage printString , ' obrażenia', 'zostało mu: ', (iNpc energy printString) }.
+            self printLines: { 'Zadajesz ', damage printString , ' obrażeń; Zostało mu: ', (iNpc energy printString) }.
             iNpc energy: (iNpc energy - damage).
 
 
             randOffset := (Array with: 0 with: 1 with: 2 with: 3) atRandom.
             damage := (randOffset + iNpc attack) - iStudent defense.
             damage := damage > 0 ifTrue: [damage] ifFalse: [0]. 
-            self printLines: { 'Zadano ci ', damage printString , ' obrażenia', 'zostało ci: ', (iStudent energy printString) }.
+            self printLines: { 'Zadano ci ', damage printString , ' obrażeń; Zostało ci: ', (iStudent energy printString) }.
             iStudent energy: (iStudent energy - damage).
 
             (iStudent energy < 0) ifTrue: [
@@ -116,13 +116,13 @@ Object subclass: Interaction [
         | reward |
 
         iNpc inventory isEmpty ifTrue: [
-            self printLines: { 'wydaje się że ktoś już skorzystał z okazji' }.
+            self printLines: { 'Podchodzisz do automatu i wpisujesz kod, jednak nic się nie dzieje. Wpierw byłeś zszokowany, jednak później zauważyłeś że światełko w nim się wcale nie świeci. Chyba jesteś naprawdę zmęczony skoro tego wcześniej nie zauważyłeś...' }.
         ] ifFalse: [
             reward := iNpc inventory atRandom.
             iStudent addToInventory: reward.
             iNpc inventory: OrderedCollection new.
 
-            self printLines: { 'Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi instrukcjami podając ci coś innego. Wraz z wyrzuceniem przedmiotu, światełko w automacie zaczyna intensywnie migać, aż w końcu gaśnie. '. 'otrzymujesz ', reward itemName }.
+            self printLines: { 'Wpisujesz kod, jednak automat wydaje się nie przejmować zupełnie twoimi instrukcjami podając ci coś innego. Wraz z wyrzuceniem przedmiotu, światełko w automacie zaczyna intensywnie migać, aż w końcu gaśnie. '. 'Otrzymujesz ', reward itemName }.
         ].
     ]
 
@@ -195,7 +195,7 @@ Object subclass: Interaction [
                 isUnknown := false.
             ].
             cmd = '2' ifTrue: [ 
-                self printLines: {'Wykładowca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: "Dosć padło słów, czas podyskutować"'}.
+                self printLines: {'Wykładowca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: "Dosć padło słów, czas podyskutować".'}.
                 isUnknown := false.
                 self attack.
                 ^{iCurrentLocation . iNpc . iStudent . isGameOver}
@@ -217,7 +217,7 @@ Object subclass: Interaction [
             ].
 
             isUnknown ifTrue: [
-                self printLines: { 'Wykładowca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi' }.
+                self printLines: { 'Wykładowca nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?' }.
             ].
         ].
     ]
@@ -243,7 +243,7 @@ Object subclass: Interaction [
                 isUnknown := false.
             ].
             cmd = '2' ifTrue: [ 
-                self printLines: {'Dozorca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: dosć padło słów, czas podyskutować"'}.
+                self printLines: {'Dozorca wydaje się obrażony, możliwe że powiedziałeś za dużo. Słyszysz jak mówi: dosć padło słów, czas podyskutować".'}.
                 isUnknown := false.
                 self attack.
                 ^{iCurrentLocation . iNpc . iStudent . isGameOver}
@@ -273,7 +273,7 @@ Object subclass: Interaction [
             ].
 
             isUnknown ifTrue: [
-                self printLines: { 'Bełkoczesz coś pod nosem, oczywiście dozorcy to nie rusza. Musisz podjąć jakąś decyzję' }.
+                self printLines: { 'Bełkoczesz coś pod nosem, oczywiście dozorcy to nie rusza. Musisz podjąć jakąś decyzję.' }.
             ].
         ].
     ]
@@ -297,11 +297,11 @@ Object subclass: Interaction [
             cmd := self readCommand.  "Wczytanie nowej komendy po pokazaniu opcji"
 
             cmd = '1' ifTrue: [ 
-                self printLines: {'Dziekan potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie'}.
+                self printLines: {'Dziekan potakuje ruchem głowy wyćwiczonym do perfekcji na setkach studentów przed tobą, mającym reprezentować jego współczucie.'}.
                 isUnknown := false.
             ].
             cmd = '2' ifTrue: [ 
-                self printLines: {'Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo"'}.
+                self printLines: {'Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo".'}.
                 isUnknown := false.
                 self attack.
                 ^{iCurrentLocation . iNpc . iStudent . isGameOver}
@@ -313,9 +313,9 @@ Object subclass: Interaction [
 
                 (charismaChance = 1 and: [iStudent charisma > 1]) ifTrue: [
                     self printLines: {
-                            'Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać'.
-                            'Po chwili namysłu postanawia ci pomóc. "Możesz uznać swój dług za spłacony" mówi'.
-                            'Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach'                
+                            'Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać.'.
+                            'Po chwili namysłu postanawia ci pomóc. "Możesz uznać swój dług za spłacony" mówi.'.
+                            'Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach.'                
                     }.
                     isGameOver := true.
                 ] ifFalse: [
@@ -337,13 +337,11 @@ Object subclass: Interaction [
                     self printLines: {'Dziekan stoi przez chwilę oniemiały, był pewny, że to tylko legenda. Jednak wie dobrze, że jest to coś, co musi uhonorować. Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz, że masz przyszłość.'}.
                     isGameOver := true.
                 ].
-
-                ^{iCurrentLocation . iNpc . iStudent . isGameOver}
             ].
 
 
             isUnknown ifTrue: [
-                self printLines: { 'Dziekan nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi' }.
+                self printLines: { 'Dziekan nie wydaje się zachwycony twoją odpowiedzią, może spróbuj uważać na to co się do ciebie mówi?' }.
             ].
         ].
     ]
