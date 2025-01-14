@@ -116,7 +116,7 @@ Object subclass: GameMap [
 	]
 
     initializeItemsNPCs [
-        | poorNotes outdatedRegulations poorNotesLocation outdatedRegulationsLocation betterNotes upToDateRegulations formalWear energyDrink vendingMachine lecturer jackpot dean jackpotLocations vmLocations vmLocationName vmLocation removedLocation lecturerLocationName lecturerLocation jackpotLocationName jackpotLocation deanLocation |
+        | poorNotes outdatedRegulations poorNotesLocation outdatedRegulationsLocation betterNotes upToDateRegulations formalWear energyDrink vendingMachine lecturer jackpot dean jackpotLocations vmLocations vmLocationName vmLocation removedLocation lecturerLocationName lecturerLocation jackpotLocationName jackpotLocation deanLocation custodian |
 
         poorNotes := Item new: 'Słabe notatki' description: 'Notatki pozostawione przez studenta pierwszego roku. Nie dają dużo, ale lepszy rydz niż nic. (+2 ataku)' stat: 'Attack' value: 2.
         outdatedRegulations := Item new: 'Nieaktualny regulamin studiów' description: 'Zbiór kartek, na których widnieje wielka liczba ''2005''. Może coś jest jeszcze aktualne? (+2 obrony)' stat: 'Defense' value: 2.
@@ -133,7 +133,7 @@ Object subclass: GameMap [
 
         vendingMachine := Player new: 'Automat' energy: 0 attack: 0 defense: 0 inventory: (OrderedCollection with: betterNotes with: upToDateRegulations with: formalWear with: energyDrink).
 
-        vmLocations := #('1_4_d' '1_2_a' '1_1_d' '1_1_e' '1_5_c').
+        vmLocations := #('1_3_d' '1_2_g' '1_5_g' '1_3_j').
         vmLocationName := vmLocations atRandom.
         vmLocation := locations at: vmLocationName ifAbsent: [nil].
         vmLocation addNPC: vendingMachine.
@@ -159,6 +159,16 @@ Object subclass: GameMap [
             deanLocation addNPC: dean.
         ].
     ]
+
+initializeCustodianNPC [
+    | custodian custodianLocation |
+
+    custodian := Player new: 'Dozorca' energy: 20 attack: 3 defense: 3 inventory: (OrderedCollection new).
+    custodianLocation := locations at: '1_5_i' ifAbsent: [nil].
+    custodianLocation addNPC: custodian.
+
+]
+
 
     addPathBetween: location1key and: location2key inDirection: aDirection [
         | location1 location2 reverseDirection |

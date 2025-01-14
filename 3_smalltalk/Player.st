@@ -52,6 +52,10 @@ Object subclass: Player [
     inventory [
         ^inventory.
     ]
+
+    addToInventory: anItem [
+        inventory add: anItem.
+    ]
 ]
 
 Player subclass: HumanPlayer [

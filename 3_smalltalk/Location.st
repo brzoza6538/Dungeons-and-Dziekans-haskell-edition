@@ -36,9 +36,24 @@ Object subclass: Location [
     addNPC: aNPC [
         npcs add: aNPC.
     ]
+        
+    removeNPCS [
+        npcs := OrderedCollection new.
+    ]
+
 
     addDirection: aDirection to: aLocation [
         directions at: aDirection put: aLocation.
+    ]
+
+    encounterNPC [
+        | npc |
+
+        npc := npcs isEmpty
+            ifTrue: [nil]
+            ifFalse: [npcs first].
+
+        ^npc
     ]
 
     reverseDirectionFor: aDirection [

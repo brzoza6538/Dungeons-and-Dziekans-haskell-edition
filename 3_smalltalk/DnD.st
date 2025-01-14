@@ -5,6 +5,7 @@ FileStream fileIn: 'Item.st'.
 FileStream fileIn: 'Player.st'.
 FileStream fileIn: 'Location.st'.
 FileStream fileIn: 'GameMap.st'.
+FileStream fileIn: 'Interaction.st'.
 
 Object subclass: Game [
     | isGameOver map currentLocation student |
@@ -92,7 +93,7 @@ Object subclass: Game [
 
     "Run the game."
     run [
-        | cmd isUnknown result newLocation direction itemName itemToTake itemToDrop |
+        | cmd isUnknown result newLocation direction itemName itemToTake itemToDrop currentInteraction metNpc|
 
         self printIntroduction.
         self printInstructions.
@@ -116,6 +117,22 @@ Object subclass: Game [
                     self printLines: { 'Idziesz w kierunku ', direction, '.' }.
                     self printLines: { '' }.
                 	self printLines: { currentLocation describe }.
+
+                    "go to interactions"
+                    metNpc := currentLocation encounterNPC.
+                    metNpc ifNotNil: [
+                        self printLines: { metNpc name }.
+                        self printLines: { '----' }.
+                        currentInteraction := Interaction new: student metNpc: metNpc currentLocation: currentLocation.
+
+                        result := currentInteraction interact.
+                        
+                        currentLocation := result first.
+                        metNpc := result second.
+                        student := result third.
+                        isGameOver := result fourth.
+                    ].
+
                 ] ifNil: [
                     self printLines: { 'Nie można tam przejść.' }.
                 ].
@@ -124,6 +141,10 @@ Object subclass: Game [
 
             cmd = 'look' ifTrue: [
                 self printLines: { currentLocation describe }.
+                self printLines: { '---------------' }. 
+                self printLines: { currentLocation encounterNPC name }. 
+
+                self printLines: { '---------------' }. 
                 isUnknown := false.
             ].
             
