@@ -207,7 +207,7 @@ Object subclass: Interaction [
 
                 (charismaChance = 1 and: [iStudent charisma > 0]) ifTrue: [
                     self printLines: {'Dzięki odrobinie charyzmy wykładowca zdradza ci sekret. Przed wyjściem powinien właśnie teraz stać dozorca. Jest to rozsądny człowiek, może uda ci się z nim dogadać.'}.
-                    iCurrentLocation initializeCustodianNPC.
+                    " iCurrentLocation initializeCustodianNPC. "
                 ] ifFalse: [
                     self printLines: {'Starasz się zrobić dobre wrażenie i odpowiadasz mu "Dzień dobry panie magistrze doktorze doktorancki od spraw bardzo ważnych". Nie przemyślałeś jednak, że przywitanie może nie być najmądrzejszym pomysłem, kiedy wykładowca oczekuje od ciebie wyjaśnień. Twarz mu nagle pochmurnieje, a z jego ust zaczynają się sypać pytania dotyczące twojej wiedzy.'}.
                     self attack.
