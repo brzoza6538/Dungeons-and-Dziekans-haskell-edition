@@ -168,7 +168,7 @@ interactWithDean gameState = do
             interactWithDean gameState
 
         "2" -> do
-            printLines ["Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo.", ""]
+            printLines ["Dziekan wydaje się obrażony, możliwe że powiedziałeś za dużo... o wiele za dużo", ""]
             attackNPC gameState
         
         "3" -> do
@@ -230,19 +230,19 @@ attackNPC gameState = do
         -- +/- 2 do ataku bazowego minus defense przeciwnika 
         randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
         let
-            damageNPC = (herosAttack (stats gameState)) + randOffset -  (defense npc)
+            damageNPC = max 0 ((herosAttack (stats gameState)) + randOffset - (defense npc))
             halfwayGameState = updateNPC gameState damageNPC
-        printLines ["Zadajesz " ++ show damageNPC ++ " obrażenia"]
+        printLines ["twój argument zabija " ++ show damageNPC ++ " szarych komórek " ++ npcName npc]
 
         randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
         let
-            damageHero = (attack npc) + randOffset -  (herosDefense (stats gameState))
+            damageHero = max 0 ((attack npc) + randOffset -  (herosDefense (stats gameState)))
             finalGameState = updateHero halfwayGameState damageHero
-        printLines [npcName npc ++ " zadaje ci " ++ show damageHero ++ " obrażeń"]
+        printLines ["tłumaczący " ++ npcName npc ++ " ledwo daje ci dojść do słowa. tracisz " ++ show damageHero ++ " energii próbując udawać że rozumiesz o czym mówi"]
 
 
         if ((herosEnergy (stats gameState)) - damageHero < 0) then do
-                printLines ["Koniec gry. Zostałeś pokonany"]
+                printLines ["To koniec, ledwo stoisz na nogach. Nie masz już siły z nim rozmawiać.", "Przegrałeś."]
                 let endGameState = finalGameState { running = False } 
                 return endGameState
 
@@ -253,10 +253,10 @@ attackNPC gameState = do
                 return endGameState
 
             else do
-                printLines ["I jak stał. " ++ npcName npc ++ " teraz już nie stoi"]
+                printLines ["I jak stał. " ++ npcName npc ++ " teraz już nie stoi", "Namieszałeś mu w głowie tak bardzo, że nie wie już nawet jak się nazywa"]
                 return finalGameState 
 
         else do 
-            printLines ["Przeciwnikowi zostało " ++ show ((energy npc) - damageNPC) ++ " energii.", "Zostało ci " ++ show (herosEnergy (stats finalGameState)) ++ " energii.", ""]
+            printLines ["Przeciwnikowi zostało " ++ show ((energy npc) - damageNPC) ++ " szarych komórek do zniszczenia", "Zostało ci " ++ show (herosEnergy (stats finalGameState)) ++ " energii.", ""]
             attackNPC finalGameState
 

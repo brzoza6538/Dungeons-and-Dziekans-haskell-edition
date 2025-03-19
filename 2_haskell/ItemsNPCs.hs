@@ -38,11 +38,11 @@ data NPC = NPC
   deriving (Eq, Show)
 
 
-dean = NPC "Dziekana" 50 10 4
+dean = NPC "Dziekana" 30 10 4
 
 lecturer = NPC "Wykładowcę" 20 5 0
 
-janitor = NPC "Dozorcę" 20 3 3
+janitor = NPC "Dozorcę" 20 5 5
 
 vendingMachine = NPC "Automat" 0 0 0
 
