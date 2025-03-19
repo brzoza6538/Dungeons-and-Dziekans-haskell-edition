@@ -222,7 +222,7 @@ attackNPC gameState = do
   
   case npcName npc of
     "Automat" -> do 
-        printLines ["Maszyna wydaje się buczyć 'Ach, wreszcie godny oponent...'", "Po czym wybucha drastycznie ciebie raniąc. Sfrustrowany dziekan podziwia twoje poświęcenie oglądając jak twoje nieprzytomne ciało jest wywożone z wydziału ambulansem bez uiszczenia opłaty", "Koniec gry. Nie musisz się już martwić warunkami, właściwie nie martwisz się już o nic..."]
+        printLines ["Maszyna wydaje się buczyć 'Ach, wreszcie godny oponent...'", "Po czym wybucha drastycznie ciebie raniąc", "Sfrustrowany dziekan podziwia twoje poświęcenie oglądając jak twoje nieprzytomne ciało jest wywożone z wydziału ambulansem bez uiszczenia opłaty", "Koniec gry. Nie musisz się już martwić warunkami, właściwie nie martwisz się już o nic..."]
         let newGameState = gameState { running = False } 
         return newGameState
         
