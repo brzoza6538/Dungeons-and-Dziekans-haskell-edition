@@ -189,7 +189,7 @@ interactWithDean gameState = do
                 return newGameState
                 
             else do
-                printLines ["Dziekan stoi przez chwilę oniemiały, był pewny śmieje się z ciebie i pyta czy to też pies ci zjadł", ""]
+                printLines ["Dziekan stoi przez chwilę oniemiały, jednak szybko odzyskuje równowagę, widząc, że to tylko blef. Zaczyna się śmiać z ciebie i pyta, czy to też pies ci zjadł", ""]
                 interactWithDean gameState
 
         _ -> do  
