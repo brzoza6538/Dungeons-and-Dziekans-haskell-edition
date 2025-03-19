@@ -174,7 +174,7 @@ interactWithDean gameState = do
         "3" -> do
             idx <- randomRIO (0 :: Int, 1 :: Int)
             if (idx == 1 && herosCharisma (stats gameState) > 1) then do
-                printLines ["Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Po chwili namysłu postanawia ci pomóc. Możesz uznać swój dług za spłacony", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach.", "", ""]
+                printLines ["Dziekan słucha cię uważnie, twoje idealnie dobrane odzienie, naturalna charyzma i umniejętność zmyślania historii w czasie rzeczywistym, sprawiają że nie może ciebie nie wysłuchać. Gdy skończyłeś, przysiągłbyś, że widziałeś łezkę zbierającą się w jego oku.", "Po chwili namysłu Dziekan postanawia ci pomóc. Możesz uznać swój dług za spłacony", "Koniec gry, przeżyłeś dzisiejszy dzień i po raz pierwszy od dawna czujesz że przyszłość jest w twoich rękach.", "", ""]
                 let newGameState = gameState { running = False } 
                 return newGameState
             else do  
@@ -222,23 +222,23 @@ attackNPC gameState = do
   
   case npcName npc of
     "Automat" -> do 
-        printLines ["Maszyna wydaje się buczyć 'Ach, wreszcie godny oponent...'", "Po czym wybucha drastycznie ciebie raniąc", "Sfrustrowany dziekan podziwia twoje poświęcenie oglądając jak twoje nieprzytomne ciało jest wywożone z wydziału ambulansem bez uiszczenia opłaty", "Koniec gry. Nie musisz się już martwić warunkami, właściwie nie martwisz się już o nic..."]
+        printLines ["Maszyna wydaje się buczyć 'Ach, wreszcie godny oponent...'", "Po czym wybucha drastycznie ciebie raniąc", "Sfrustrowany dziekan podziwia twoje poświęcenie oglądając jak twoje nieprzytomne ciało jest wywożone z wydziału ambulansem bez uiszczenia opłaty", "Nigdy by mu nie przyszło do głowy że otrzymasz pomoc od jego odwiecznego wroga", "Koniec gry. Nie musisz się już martwić warunkami, właściwie nie martwisz się już o nic..."]
         let newGameState = gameState { running = False } 
         return newGameState
         
     _ -> do 
         -- +/- 2 do ataku bazowego minus defense przeciwnika 
-        randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
+        randOffset <- randomRIO ((0) :: Int, (2) :: Int) 
         let
             damageNPC = max 0 ((herosAttack (stats gameState)) + randOffset - (defense npc))
             halfwayGameState = updateNPC gameState damageNPC
         printLines ["twój argument zabija " ++ show damageNPC ++ " szarych komórek " ++ npcName npc]
 
-        randOffset <- randomRIO ((0) :: Int, (3) :: Int) 
+        randOffset <- randomRIO ((0) :: Int, (2) :: Int) 
         let
             damageHero = max 0 ((attack npc) + randOffset -  (herosDefense (stats gameState)))
             finalGameState = updateHero halfwayGameState damageHero
-        printLines ["tłumaczący " ++ npcName npc ++ " ledwo daje ci dojść do słowa. tracisz " ++ show damageHero ++ " energii próbując udawać że rozumiesz o czym mówi"]
+        printLines ["Próbujesz się bronić regulaminem, ale tłumaczący " ++ npcName npc ++ " ledwo daje ci dojść do słowa. tracisz " ++ show damageHero ++ " energii próbując udawać że rozumiesz o czym mówi"]
 
 
         if ((herosEnergy (stats gameState)) - damageHero < 0) then do
